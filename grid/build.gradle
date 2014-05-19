@@ -1,0 +1,31 @@
+apply plugin: "java"
+apply plugin: "maven"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+group = "eu.lestard"
+version = "0.1.0"
+
+
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+
+dependencies {
+    compile "org.assertj:assertj-core:1.6.0"
+
+    // testing
+    testCompile "junit:junit:4.11"
+}
+
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked"
+        }
+    }
+}
