@@ -4,12 +4,10 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.*;
 import javafx.collections.ListChangeListener;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.geometry.Insets;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +21,7 @@ public class GridView<State extends Enum> extends StackPane {
 
     private ObjectProperty<GridModel<State>> gridModelProperty = new SimpleObjectProperty<>();
 
-    private Map<Cell<State>, Rectangle> rectangleMap = new HashMap<>();
+    private Map<Cell<State>, Pane> rectangleMap = new HashMap<>();
 
     private ObjectProperty<Paint> strokeProperty = new SimpleObjectProperty<>(Color.LIGHTGREY);
 
@@ -66,8 +64,8 @@ public class GridView<State extends Enum> extends StackPane {
 
                 if (change.wasRemoved()) {
                     change.getRemoved().forEach(cell -> {
-                        final Rectangle rectangle = rectangleMap.get(cell);
-                        rootPane.getChildren().remove(rectangle);
+                        Pane pane = rectangleMap.get(cell);
+                        rootPane.getChildren().remove(pane);
 
                         rectangleMap.remove(cell);
                     });
@@ -81,26 +79,42 @@ public class GridView<State extends Enum> extends StackPane {
         NumberBinding xStart = pxPerCell.multiply(cell.getColumn());
         NumberBinding yStart = pxPerCell.multiply(cell.getRow());
 
-        Rectangle rectangle = new Rectangle();
-        rectangle.setStrokeType(StrokeType.INSIDE);
-        rectangle.strokeProperty().bind(strokeProperty);
-        rectangle.strokeWidthProperty().bind(strokeWidthProperty);
+        Pane pane = new Pane();
+        pane.layoutXProperty().bind(xStart);
+        pane.layoutYProperty().bind(yStart);
 
-        rectangle.xProperty().bind(xStart);
-        rectangle.yProperty().bind(yStart);
+        pane.minWidthProperty().bind(pxPerCell);
+        pane.maxWidthProperty().bind(pxPerCell);
 
-        rectangle.widthProperty().bind(pxPerCell);
-        rectangle.heightProperty().bind(pxPerCell);
+        pane.minHeightProperty().bind(pxPerCell);
+        pane.maxHeightProperty().bind(pxPerCell);
+        pane.setBackground(new Background(new BackgroundFill(colorMapping.get(cell.stateProperty().get()), CornerRadii.EMPTY, Insets.EMPTY)));
 
-        rectangle.setFill(colorMapping.get(cell.stateProperty().get()));
 
-        cell.stateProperty().addListener((obs, oldValue, newValue) -> {
-            rectangle.setFill(colorMapping.get(newValue));
+        updateStroke(pane);
+        strokeProperty().addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                updateStroke(pane);
+            }
         });
 
-        rectangleMap.put(cell, rectangle);
+        strokeWidthProperty().addListener((obs, oldV, newV)->{
+            updateStroke(pane);
+        });
 
-        rootPane.getChildren().add(rectangle);
+        cell.stateProperty().addListener((obs, oldValue, newValue) -> {
+            pane.setBackground(new Background(new BackgroundFill(colorMapping.get(newValue), CornerRadii.EMPTY, Insets.EMPTY )));
+        });
+
+        rectangleMap.put(cell,pane);
+
+        rootPane.getChildren().add(pane);
+    }
+
+    private void updateStroke(Pane pane){
+        BorderWidths widths = new BorderWidths(strokeWidthProperty().get());
+        BorderStroke stroke = new BorderStroke(strokeProperty().get(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, widths);
+        pane.setBorder(new Border(stroke));
     }
 
     public void setGridModel(GridModel<State> gridModel) {
