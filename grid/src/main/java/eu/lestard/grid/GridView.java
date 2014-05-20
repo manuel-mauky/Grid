@@ -5,12 +5,14 @@ import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.*;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class GridView<State extends Enum> extends StackPane {
 
@@ -18,6 +20,8 @@ public class GridView<State extends Enum> extends StackPane {
     private Pane rootPane = new Pane();
 
     private Map<State, Color> colorMapping = new HashMap<>();
+
+    private Map<State, Supplier<Node>> nodeMapping = new HashMap<>();
 
     private ObjectProperty<GridModel<State>> gridModelProperty = new SimpleObjectProperty<>();
 
@@ -79,7 +83,7 @@ public class GridView<State extends Enum> extends StackPane {
         NumberBinding xStart = pxPerCell.multiply(cell.getColumn());
         NumberBinding yStart = pxPerCell.multiply(cell.getRow());
 
-        Pane pane = new Pane();
+        Pane pane = new StackPane();
         pane.layoutXProperty().bind(xStart);
         pane.layoutYProperty().bind(yStart);
 
@@ -88,8 +92,8 @@ public class GridView<State extends Enum> extends StackPane {
 
         pane.minHeightProperty().bind(pxPerCell);
         pane.maxHeightProperty().bind(pxPerCell);
-        pane.setBackground(new Background(new BackgroundFill(colorMapping.get(cell.stateProperty().get()), CornerRadii.EMPTY, Insets.EMPTY)));
 
+        updateCell(pane, cell.stateProperty().get());
 
         updateStroke(pane);
         strokeProperty().addListener((obs, oldV, newV) -> {
@@ -103,12 +107,21 @@ public class GridView<State extends Enum> extends StackPane {
         });
 
         cell.stateProperty().addListener((obs, oldValue, newValue) -> {
-            pane.setBackground(new Background(new BackgroundFill(colorMapping.get(newValue), CornerRadii.EMPTY, Insets.EMPTY )));
+            updateCell(pane, newValue);
         });
 
         rectangleMap.put(cell,pane);
 
         rootPane.getChildren().add(pane);
+    }
+
+    private void updateCell(Pane pane, State newState){
+        pane.setBackground(new Background(new BackgroundFill(colorMapping.get(newState), CornerRadii.EMPTY, Insets.EMPTY )));
+        pane.getChildren().clear();
+        final Supplier<Node> nodeSupplier = nodeMapping.get(newState);
+        if(nodeSupplier!=null){
+            pane.getChildren().add(nodeSupplier.get());
+        }
     }
 
     private void updateStroke(Pane pane){
@@ -127,6 +140,10 @@ public class GridView<State extends Enum> extends StackPane {
 
     public void addColorMapping(State state, Color color) {
         this.colorMapping.put(state, color);
+    }
+
+    public void addNodeMapping(State state, Supplier<Node> nodeSupplier){
+        this.nodeMapping.put(state,nodeSupplier);
     }
 
     public ReadOnlyDoubleProperty rootWidthProperty(){
