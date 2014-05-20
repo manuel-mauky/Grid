@@ -30,14 +30,7 @@ public class GridView<State extends Enum> extends StackPane {
     private DoubleProperty strokeWidthProperty = new SimpleDoubleProperty(1);
 
     public GridView() {
-        final NumberBinding fullSize = Bindings.min(this.widthProperty(), this.heightProperty());
-
-        rootPane.maxWidthProperty().bind(fullSize);
-        rootPane.maxHeightProperty().bind(fullSize);
-
         this.getChildren().add(rootPane);
-
-        rootPane.setStyle("-fx-border-color:black");
 
         gridModelProperty.addListener((obs, oldValue, newValue) -> {
             if (newValue != null) {
@@ -47,8 +40,16 @@ public class GridView<State extends Enum> extends StackPane {
     }
 
     private void initGridModel() {
-        final NumberBinding size = Bindings.max(getGridModel().numberOfColumns(), getGridModel().numberOfRows());
-        NumberBinding pxPerCell = Bindings.min(rootPane.widthProperty(), rootPane.heightProperty()).divide(size);
+        NumberBinding widthPerCell = this.widthProperty().divide(getGridModel().numberOfColumns());
+        NumberBinding heightPerCell = this.heightProperty().divide(getGridModel().numberOfRows());
+
+        NumberBinding pxPerCell = Bindings.min(widthPerCell, heightPerCell);
+
+        NumberBinding rootWidth = pxPerCell.multiply(getGridModel().numberOfColumns());
+        NumberBinding rootHeight = pxPerCell.multiply(getGridModel().numberOfRows());
+
+        rootPane.maxWidthProperty().bind(rootWidth);
+        rootPane.maxHeightProperty().bind(rootHeight);
 
         gridModelProperty.get().getCells().forEach(cell->{
             addedCell(pxPerCell, cell);
