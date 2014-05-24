@@ -33,6 +33,8 @@ public class GridView<State extends Enum> extends StackPane {
 
     private DoubleProperty strokeWidthProperty = new SimpleDoubleProperty(1);
 
+    private DoubleProperty rectangleSize = new SimpleDoubleProperty();
+
     public GridView() {
         this.getChildren().add(rootPane);
 
@@ -49,13 +51,15 @@ public class GridView<State extends Enum> extends StackPane {
 
         NumberBinding pxPerCell = Bindings.min(widthPerCell, heightPerCell);
 
+        rectangleSize.bind(pxPerCell);
+
         NumberBinding rootWidth = pxPerCell.multiply(getGridModel().numberOfColumns());
         NumberBinding rootHeight = pxPerCell.multiply(getGridModel().numberOfRows());
 
         rootPane.maxWidthProperty().bind(rootWidth);
         rootPane.maxHeightProperty().bind(rootHeight);
 
-        gridModelProperty.get().getCells().forEach(cell->{
+        gridModelProperty.get().getCells().forEach(cell -> {
             addedCell(pxPerCell, cell);
         });
 
@@ -126,7 +130,7 @@ public class GridView<State extends Enum> extends StackPane {
     }
 
     public void refresh(){
-        rectangleMap.forEach((cell, pane)->{
+        rectangleMap.forEach((cell, pane) -> {
             updateCell(pane, cell);
             updateStroke(pane);
         });
@@ -165,6 +169,10 @@ public class GridView<State extends Enum> extends StackPane {
 
     public void addNodeMapping(State state, Function<Cell<State>,Node> nodeFunction){
         this.nodeMapping.put(state, nodeFunction);
+    }
+
+    public ReadOnlyDoubleProperty rectangleSizeProperty() {
+        return rectangleSize;
     }
 
     public ReadOnlyDoubleProperty rootWidthProperty(){
