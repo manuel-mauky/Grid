@@ -22,6 +22,10 @@ public class Cell <State extends Enum> {
         return state;
     }
 
+    public State getState(){
+        return state.get();
+    }
+
     public void changeState(State newState){
         state.setValue(newState);
     }
