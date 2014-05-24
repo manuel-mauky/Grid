@@ -132,6 +132,10 @@ public class GridView<State extends Enum> extends StackPane {
         });
     }
 
+    public Pane getCellPane(Cell<State> cell){
+        return rectangleMap.get(cell);
+    }
+
     private void updateCell(Pane pane, Cell<State> cell){
         pane.setBackground(new Background(new BackgroundFill(colorMapping.get(cell.getState()), CornerRadii.EMPTY, Insets.EMPTY )));
         pane.getChildren().clear();

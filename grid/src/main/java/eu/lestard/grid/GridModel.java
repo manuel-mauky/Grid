@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GridModel<State extends Enum> {
 
@@ -78,6 +79,10 @@ public class GridModel<State extends Enum> {
         if(element != null){
             collection.add(element);
         }
+    }
+
+    public List<Cell<State>> getCellsWithState(State state){
+        return cells.stream().filter(c->c.getState() == state).collect(Collectors.toList());
     }
 
     public List<Cell<State>> getNeighbours(Cell<State> cell){
