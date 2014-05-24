@@ -3,12 +3,16 @@ package eu.lestard.grid;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 
 public class Cell <State extends Enum> {
 
     private final int column;
 
     private final int row;
+
+    private ObjectProperty<EventHandler<MouseEvent>> onClick = new SimpleObjectProperty<>();
 
     private ObjectProperty<State> state = new SimpleObjectProperty<>();
 
@@ -36,6 +40,14 @@ public class Cell <State extends Enum> {
 
     public int getRow() {
         return row;
+    }
+
+    public void setOnClick(EventHandler<MouseEvent> eventHandler){
+        this.onClick.set(eventHandler);
+    }
+
+    public ObjectProperty<EventHandler<MouseEvent>> onClickProperty(){
+        return onClick;
     }
 
     @Override

@@ -4,8 +4,10 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.*;
 import javafx.collections.ListChangeListener;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -108,6 +110,14 @@ public class GridView<State extends Enum> extends StackPane {
 
         cell.stateProperty().addListener((obs, oldValue, newValue) -> {
             updateCell(pane, cell);
+        });
+
+        pane.addEventHandler(MouseEvent.MOUSE_CLICKED, (event)->{
+            final EventHandler<MouseEvent> eventHandler = cell.onClickProperty().get();
+
+            if(eventHandler != null){
+                eventHandler.handle(event);
+            }
         });
 
         rectangleMap.put(cell,pane);
