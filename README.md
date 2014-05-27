@@ -8,7 +8,7 @@ Examples are:
 
 ### Goals
 
-- The grid will resize itself automatically so that it uses all available space is used. The aspect ratio of the squares will not be influenced by the resizing. 
+- The grid will resize itself automatically so that all available space is used. The aspect ratio of the squares will not be influenced by the resizing. 
 -  When the window is resized the grid will also automatically scale down/up.
 
 - The number of columns and rows of the grid can be controlled by javafx properties. This means that the grid will automatically add/remove new cells when the number of columns/rows is increased or decreased.
