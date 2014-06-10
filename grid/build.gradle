@@ -20,9 +20,8 @@ repositories {
 
 
 dependencies {
-    compile "org.assertj:assertj-core:1.6.0"
-
     // testing
+    testCompile "org.assertj:assertj-core:1.6.0"
     testCompile "junit:junit:4.11"
 }
 
