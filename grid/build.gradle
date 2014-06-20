@@ -22,6 +22,7 @@ repositories {
 dependencies {
     // testing
     testCompile "org.assertj:assertj-core:1.6.0"
+    testCompile "eu.lestard:assertj-javafx:0.1.1"
     testCompile "junit:junit:4.11"
 }
 
