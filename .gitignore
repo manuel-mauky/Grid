@@ -3,6 +3,7 @@
 .idea
 *.iml
 classes/
+out/
 
 # Gradle
 build/

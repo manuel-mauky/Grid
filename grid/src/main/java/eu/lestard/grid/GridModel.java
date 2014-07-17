@@ -9,6 +9,8 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class GridModel<State extends Enum> {
@@ -16,6 +18,8 @@ public class GridModel<State extends Enum> {
     private final ObservableList<Cell<State>> cells = FXCollections.observableArrayList();
     private final IntegerProperty numberOfRows = new SimpleIntegerProperty();
     private final IntegerProperty numberOfColumns = new SimpleIntegerProperty();
+
+    private Optional<Consumer<Cell<State>>> onCellAddedHandler = Optional.empty();
 
     private State defaultState;
 
@@ -38,6 +42,10 @@ public class GridModel<State extends Enum> {
                 Cell<State> existingCell = getCell(column, row);
                 if(existingCell == null){
                     Cell<State> cell = new Cell<>(column, row);
+                    if(onCellAddedHandler.isPresent()){
+                        onCellAddedHandler.get().accept(cell);
+                    }
+
                     if (defaultState != null) {
                         cell.changeState(defaultState);
                     }
@@ -49,6 +57,16 @@ public class GridModel<State extends Enum> {
         }
 
         cells.removeAll(cellsToRemove);
+    }
+
+    /**
+     * This consumer is called every time when a new cell is added to the grid. This happens when the size of
+     * the grid grows.
+     *
+     * @param handler the consumer.
+     */
+    public void setOnCellAddedHandler(Consumer<Cell<State>> handler){
+        onCellAddedHandler = Optional.of(handler);
     }
 
     public ObservableList<Cell<State>> cells() {
