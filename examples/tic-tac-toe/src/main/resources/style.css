@@ -1,0 +1,16 @@
+
+.label {
+    -fx-font-size:50px;
+
+}
+
+#winLabel {
+    -fx-background-color:white;
+
+    -fx-border-color:black;
+    -fx-border-width:4px;
+    -fx-border-radius:4px;
+
+    -fx-font-size:40px;
+    -fx-padding:0.5em;
+}
