@@ -111,6 +111,15 @@ public class GridModel<State extends Enum> {
         return cells;
     }
 
+
+    public List<Cell<State>> getCellsOfRow(int rowNumber) {
+        return cells.stream().filter(cell -> cell.getRow() == rowNumber).collect(Collectors.toList());
+    }
+
+    public List<Cell<State>> getCellsOfColumn(int columnNumber) {
+        return cells.stream().filter(cell -> cell.getColumn() == columnNumber).collect(Collectors.toList());
+    }
+
     public void setDefaultState(State defaultState) {
         this.defaultState = defaultState;
     }
@@ -138,5 +147,6 @@ public class GridModel<State extends Enum> {
     public void setNumberOfRows(int value){
         numberOfRows.set(value);
     }
+
 
 }

@@ -183,4 +183,37 @@ public class GridModelTest {
         assertThat(neighbours).contains(model.getCell(0, 1));
         assertThat(neighbours).contains(model.getCell(1, 0));
     }
+
+
+    @Test
+    public void testGetCellsOfRow(){
+        model.setNumberOfColumns(4);
+        model.setNumberOfRows(4);
+
+        final List<Cell<States>> cellsOfRow = model.getCellsOfRow(1);
+
+        assertThat(cellsOfRow).hasSize(4);
+
+        assertThat(cellsOfRow).containsOnly(
+            model.getCell(0, 1),
+            model.getCell(1, 1),
+            model.getCell(2, 1),
+            model.getCell(3, 1));
+    }
+
+    @Test
+    public void testGetCellsOfColumn(){
+        model.setNumberOfColumns(4);
+        model.setNumberOfRows(4);
+
+        final List<Cell<States>> cellsOfColumn = model.getCellsOfColumn(3);
+
+        assertThat(cellsOfColumn).hasSize(4);
+
+        assertThat(cellsOfColumn).containsOnly(
+            model.getCell(3, 0),
+            model.getCell(3, 1),
+            model.getCell(3, 2),
+            model.getCell(3, 3));
+    }
 }
