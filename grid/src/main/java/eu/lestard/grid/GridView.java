@@ -23,7 +23,7 @@ public class GridView<State extends Enum> extends StackPane {
 
     private Map<State, Color> colorMapping = new HashMap<>();
 
-    private Map<State, Function<Cell<State>,Node>> nodeMapping = new HashMap<>();
+    private Map<State, Function<Cell<State>, Node>> nodeMapping = new HashMap<>();
 
     private ObjectProperty<GridModel<State>> gridModelProperty = new SimpleObjectProperty<>();
 
@@ -33,7 +33,7 @@ public class GridView<State extends Enum> extends StackPane {
 
     private DoubleProperty strokeWidthProperty = new SimpleDoubleProperty(1);
 
-    private DoubleProperty rectangleSize = new SimpleDoubleProperty();
+    private DoubleProperty cellSquareSize = new SimpleDoubleProperty();
 
     public GridView() {
         this.getChildren().add(rootPane);
@@ -51,7 +51,7 @@ public class GridView<State extends Enum> extends StackPane {
 
         NumberBinding pxPerCell = Bindings.min(widthPerCell, heightPerCell);
 
-        rectangleSize.bind(pxPerCell);
+        cellSquareSize.bind(pxPerCell);
 
         NumberBinding rootWidth = pxPerCell.multiply(getGridModel().numberOfColumns());
         NumberBinding rootHeight = pxPerCell.multiply(getGridModel().numberOfRows());
@@ -108,7 +108,7 @@ public class GridView<State extends Enum> extends StackPane {
             }
         });
 
-        strokeWidthProperty().addListener((obs, oldV, newV)->{
+        strokeWidthProperty().addListener((obs, oldV, newV) -> {
             updateStroke(pane);
         });
 
@@ -116,40 +116,40 @@ public class GridView<State extends Enum> extends StackPane {
             updateCell(pane, cell);
         });
 
-        pane.addEventHandler(MouseEvent.MOUSE_CLICKED, (event)->{
+        pane.addEventHandler(MouseEvent.MOUSE_CLICKED, (event) -> {
             final EventHandler<MouseEvent> eventHandler = cell.onClickProperty().get();
 
-            if(eventHandler != null){
+            if (eventHandler != null) {
                 eventHandler.handle(event);
             }
         });
 
-        rectangleMap.put(cell,pane);
+        rectangleMap.put(cell, pane);
 
         rootPane.getChildren().add(pane);
     }
 
-    public void refresh(){
+    public void refresh() {
         rectangleMap.forEach((cell, pane) -> {
             updateCell(pane, cell);
             updateStroke(pane);
         });
     }
 
-    public Pane getCellPane(Cell<State> cell){
+    public Pane getCellPane(Cell<State> cell) {
         return rectangleMap.get(cell);
     }
 
-    private void updateCell(Pane pane, Cell<State> cell){
-        pane.setBackground(new Background(new BackgroundFill(colorMapping.get(cell.getState()), CornerRadii.EMPTY, Insets.EMPTY )));
+    private void updateCell(Pane pane, Cell<State> cell) {
+        pane.setBackground(new Background(new BackgroundFill(colorMapping.get(cell.getState()), CornerRadii.EMPTY, Insets.EMPTY)));
         pane.getChildren().clear();
-        final Function<Cell<State>,Node> nodeSupplier = nodeMapping.get(cell.getState());
-        if(nodeSupplier!=null){
+        final Function<Cell<State>, Node> nodeSupplier = nodeMapping.get(cell.getState());
+        if (nodeSupplier != null) {
             pane.getChildren().add(nodeSupplier.apply(cell));
         }
     }
 
-    private void updateStroke(Pane pane){
+    private void updateStroke(Pane pane) {
         BorderWidths widths = new BorderWidths(strokeWidthProperty().get());
         BorderStroke stroke = new BorderStroke(strokeProperty().get(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, widths);
         pane.setBorder(new Border(stroke));
@@ -167,35 +167,118 @@ public class GridView<State extends Enum> extends StackPane {
         this.colorMapping.put(state, color);
     }
 
-    public void addNodeMapping(State state, Function<Cell<State>,Node> nodeFunction){
-        this.nodeMapping.put(state, nodeFunction);
+    /**
+     * This method is used to add mapping functions for specific states.
+     *
+     * A mapping function gets a cell as param and has to return a {@link Node} instance.
+     *
+     * The function is called every time a cell gets the defined state. The returned node is added
+     * to the cell in the grid.
+     *
+     * This way you can add nodes to the grid when cells are changing there state.
+     *
+     * For example you can add a Label to the grid for every state.
+     * In the example we assume a States enum with the
+     * enum constants 'A' and 'B':
+     *
+     *
+     * <pre>
+     * <code>
+     *
+     *      // with java 8 lambdas:
+     *      gridModel.addNodeMapping(States.A, (cell) -> {
+     *          return new Label("A");
+     *      });
+     *
+     *      // with anonymous inner class:
+     *      gridModel.addNodeMapping(States.B, new Function{@code <Cell<States>, Node>}() {
+     *          {@literal @}Override
+     *          public Node apply(Cell{@code <State>} stateCell) {
+     *              return new Label("B");
+     *          }
+     *      });
+     * </code>
+     * </pre>
+     *
+     * @param state           the state for that the mapping function is used.
+     * @param mappingFunction the mapping function.
+     */
+    public void addNodeMapping(State state, Function<Cell<State>, Node> mappingFunction) {
+        this.nodeMapping.put(state, mappingFunction);
     }
 
-    public ReadOnlyDoubleProperty rectangleSizeProperty() {
-        return rectangleSize;
+
+    public void lala() {
+
+        addNodeMapping(null, new Function<Cell<State>, Node>() {
+            @Override
+            public Node apply(Cell<State> stateCell) {
+                return new Label("B");
+            }
+        });
+
     }
 
-    public ReadOnlyDoubleProperty rootWidthProperty(){
+    /**
+     * The size of a single cell in the grid.
+     *
+     * @return the size as read-only property.
+     */
+    public ReadOnlyDoubleProperty cellSizeProperty() {
+        return cellSquareSize;
+    }
+
+    /**
+     * The width of the root pane of the grid.
+     *
+     * @return the width as read-only property.
+     */
+    public ReadOnlyDoubleProperty rootWidthProperty() {
         return rootPane.widthProperty();
     }
 
-    public ReadOnlyDoubleProperty rootHeightProperty(){
+    /**
+     * The height of the root pane of the grid.
+     *
+     * @return the height as read-only property.
+     */
+    public ReadOnlyDoubleProperty rootHeightProperty() {
         return rootPane.heightProperty();
     }
 
-    public ReadOnlyDoubleProperty rootLayoutXProperty(){
+    /**
+     * The layoutX property of the root pane of the grid.
+     *
+     * @return the layoutX as read-only property.
+     */
+    public ReadOnlyDoubleProperty rootLayoutXProperty() {
         return rootPane.layoutXProperty();
     }
 
-    public ReadOnlyDoubleProperty rootLayoutYProperty(){
+    /**
+     * The layoutY property of the root pane of the grid.
+     *
+     * @return the layoutY as read-only property.
+     */
+    public ReadOnlyDoubleProperty rootLayoutYProperty() {
         return rootPane.layoutYProperty();
     }
 
-    public DoubleProperty strokeWidthProperty(){
+    /**
+     * The width of the stroke of the grid cells.
+     *
+     * @return the width as double property.
+     */
+    public DoubleProperty strokeWidthProperty() {
         return strokeWidthProperty;
     }
 
-    public ObjectProperty<Paint> strokeProperty(){
+    /**
+     * The paint that is used as Stroke for the grid cells.
+     *
+     * @return the stroke paint as object property.
+     */
+    public ObjectProperty<Paint> strokeProperty() {
         return strokeProperty;
     }
 
