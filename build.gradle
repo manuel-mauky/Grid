@@ -1,3 +1,29 @@
 task wrapper(type: Wrapper) {
     gradleVersion = '1.12'
 }
+
+
+subprojects {
+    apply plugin: "java"
+    group = "eu.lestard"
+    version = "0.1.0"
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+}
+
+project(":examples:demo") {
+    dependencies {
+        compile project(":grid")
+    }
+}
+
+project(":examples:tic-tac-toe") {
+    dependencies {
+        compile project(":grid")
+    }
+}

@@ -1,26 +1,8 @@
 apply plugin: "java"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-group = "eu.lestard"
-version = "0.1.0"
-
-
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven{
-        url "https://oss.sonatype.org/content/repositories/snapshots/"
-    }
-
-}
-
-
 dependencies {
 
-    compile 'eu.lestard:grid:0.1.0-SNAPSHOT'
+    compile 'eu.lestard:grid:0.1.0'
 
     compile "org.assertj:assertj-core:1.6.0"
 

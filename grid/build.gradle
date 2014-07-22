@@ -5,16 +5,8 @@ apply plugin: 'sonar-runner'
 apply plugin: "jacoco"
 
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-group = "eu.lestard"
-version = "0.1.0"
-
-
 
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 

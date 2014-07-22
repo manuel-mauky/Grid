@@ -2,25 +2,13 @@ package eu.lestard.grid;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
@@ -153,8 +141,8 @@ public class GridView<State extends Enum> extends StackPane {
     }
 
     private void updateCell(Pane pane, Cell<State> cell) {
-        pane.setBackground(new Background(new BackgroundFill(colorMapping.get(cell.getState()), CornerRadii.EMPTY, 
-                Insets.EMPTY)));
+        pane.setBackground(new Background(new BackgroundFill(colorMapping.get(cell.getState()), CornerRadii.EMPTY,
+            Insets.EMPTY)));
         pane.getChildren().clear();
         final Function<Cell<State>, Node> nodeSupplier = nodeMapping.get(cell.getState());
         if (nodeSupplier != null) {
@@ -164,8 +152,8 @@ public class GridView<State extends Enum> extends StackPane {
 
     private void updateStroke(Pane pane) {
         BorderWidths widths = new BorderWidths(strokeWidthProperty().get());
-        BorderStroke stroke = new BorderStroke(strokeProperty().get(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, 
-                widths);
+        BorderStroke stroke = new BorderStroke(strokeProperty().get(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
+            widths);
         pane.setBorder(new Border(stroke));
     }
 
@@ -197,8 +185,6 @@ public class GridView<State extends Enum> extends StackPane {
      *
      *
      * <pre>
-     * <code>
-     *     
      *
      *      // with java 8 lambdas:
      *      gridModel.addNodeMapping(States.A, (cell){@code ->} {
@@ -213,7 +199,6 @@ public class GridView<State extends Enum> extends StackPane {
      *          }
      *      });
      *
-     * </code>
      * </pre>
      *
      * @param state           the state for that the mapping function is used.
