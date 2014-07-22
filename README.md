@@ -1,4 +1,7 @@
 # Grid
+
+[![Build Status](https://travis-ci.org/lestard/Grid.svg?branch=master)](https://travis-ci.org/lestard/Grid)
+
 **Grid** is a JavaFX (8) component that is intended for different kinds of small games that are based on a grid of squares like chess or sudoku.
 
 Examples are:
