@@ -123,6 +123,38 @@ public class GridModelTest {
         });
     }
 
+    /**
+     * When there is no default state define and the size of the grid is changed,
+     * the new cells have a state of <code>null</code>.
+     *
+     * When now a new default state is defined than all cells with a state of <code>null</code>
+     * should get the new default state. Cells that already have another state should keep this state.
+     */
+    @Test
+    public void testCellsWithStateNullGetDefaultState(){
+        model = new GridModel<>(); // we need a fresh gridModel for this test where no default state is defined.
+
+        model.setNumberOfColumns(3);
+        model.setNumberOfRows(3);
+
+        // All cells have null as state at the moment
+        model.cells().forEach(cell -> assertThat(cell.stateProperty()).hasNullValue());
+
+        // this one cell gets another state
+        model.getCell(1, 2).changeState(States.FILLED);
+
+
+        // now we define a default cell
+        model.setDefaultState(States.EMPTY);
+
+        assertThat(model.getCell(1,2).stateProperty()).hasValue(States.FILLED); // still the old state.
+
+
+        final List<Cell<States>> emptyCells = model.getCellsWithState(States.EMPTY);
+
+        assertThat(emptyCells).hasSize(3 * 3 - 1); // all cells minus the one that was filled before should now have the state "empty".
+    }
+
     @Test
     public void testGetCell(){
         model.setNumberOfColumns(3);

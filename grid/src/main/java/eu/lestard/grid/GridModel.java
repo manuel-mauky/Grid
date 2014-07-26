@@ -122,6 +122,8 @@ public class GridModel<State extends Enum> {
 
     public void setDefaultState(State defaultState) {
         this.defaultState = defaultState;
+
+        getCellsWithState(null).forEach(cell -> cell.changeState(defaultState));
     }
 
     public IntegerProperty numberOfColumns(){
