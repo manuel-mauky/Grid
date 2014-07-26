@@ -2,6 +2,10 @@ language: java
 jdk:
 - oraclejdk8
 
+before_install:
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+
 env:
   global:
   - secure: fr/+YihxsDim2xaxB5qNmN8CJoYRGk31JTY8QvVjeN7Ur+4hbHpGW6irL69I6mCrQsPWv8B+qKcnzgnfXGKv4mrkDP4n/m952p7UDzbaW+cwuTmJ1FJe/EQGEXPrWG7AJblU5SxG4AZwFzxkJfmqsaaOV70Dl8JeYUCL+BJCt30=

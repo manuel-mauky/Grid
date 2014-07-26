@@ -16,8 +16,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class GridView<State extends Enum> extends StackPane {
 
+/**
+ * This class is the UI part of the grid and defines how the grid is shown in the view.
+ *
+ * To use this class you need to first create a {@link eu.lestard.grid.GridModel} and add it to this view class with the {@link #setGridModel} method.
+ *
+ * After that you can define what the grid will look like when a cell gets a specific State.
+ *
+ * @param <State>
+ */
+public class GridView<State extends Enum> extends StackPane {
 
     private Pane rootPane = new Pane();
 
@@ -35,6 +44,9 @@ public class GridView<State extends Enum> extends StackPane {
 
     private DoubleProperty cellSquareSize = new SimpleDoubleProperty();
 
+    /**
+     * Create a new instance of the GridView.
+     */
     public GridView() {
         this.getChildren().add(rootPane);
 
@@ -45,6 +57,11 @@ public class GridView<State extends Enum> extends StackPane {
         });
     }
 
+    /**
+     * This method is called when the gridModel is added to the view. It is used
+     * to define the bindings for the size of the grid cells.
+     *
+     */
     private void initGridModel() {
         NumberBinding widthPerCell = this.widthProperty().divide(getGridModel().numberOfColumns());
         NumberBinding heightPerCell = this.heightProperty().divide(getGridModel().numberOfRows());
@@ -85,6 +102,9 @@ public class GridView<State extends Enum> extends StackPane {
 
     }
 
+    /**
+     * This method is called when new cells are added in the grid model.
+     */
     private void addedCell(NumberBinding pxPerCell, Cell<State> cell) {
         NumberBinding xStart = pxPerCell.multiply(cell.getColumn());
         NumberBinding yStart = pxPerCell.multiply(cell.getRow());
@@ -129,12 +149,13 @@ public class GridView<State extends Enum> extends StackPane {
         rootPane.getChildren().add(pane);
     }
 
-    public void refresh() {
+    private void updateAllCells() {
         rectangleMap.forEach((cell, pane) -> {
             updateCell(pane, cell);
             updateStroke(pane);
         });
     }
+
 
     public Pane getCellPane(Cell<State> cell) {
         return rectangleMap.get(cell);
@@ -167,6 +188,7 @@ public class GridView<State extends Enum> extends StackPane {
 
     public void addColorMapping(State state, Color color) {
         this.colorMapping.put(state, color);
+        updateAllCells();
     }
 
     /**
@@ -206,6 +228,7 @@ public class GridView<State extends Enum> extends StackPane {
      */
     public void addNodeMapping(State state, Function<Cell<State>, Node> mappingFunction) {
         this.nodeMapping.put(state, mappingFunction);
+        updateAllCells();
     }
 
     /**

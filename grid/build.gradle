@@ -16,6 +16,8 @@ dependencies {
     testCompile "org.assertj:assertj-core:1.6.0"
     testCompile "eu.lestard:assertj-javafx:0.1.1"
     testCompile "junit:junit:4.11"
+
+    testCompile "de.saxsys:jfx-testrunner:1.0"
 }
 
 allprojects {
