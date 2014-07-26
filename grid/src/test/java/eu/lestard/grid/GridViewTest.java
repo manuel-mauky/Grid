@@ -103,8 +103,6 @@ public class GridViewTest {
         gridView.addNodeMapping(States.EMPTY, (cell) -> emptyLabel);
         gridView.addNodeMapping(States.FILLED, (cell) -> filledButton);
 
-        gridView.updateAllCells();
-
         assertThat(gridView.getCellPane(gridModel.getCell(0, 0)).getChildren()).contains(emptyLabel);
         assertThat(gridView.getCellPane(gridModel.getCell(0,1)).getChildren()).contains(filledButton);
     }
