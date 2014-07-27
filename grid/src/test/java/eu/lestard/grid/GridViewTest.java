@@ -2,14 +2,19 @@ package eu.lestard.grid;
 
 import de.saxsys.javafx.test.JfxRunner;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.concurrent.CompletableFuture;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -105,6 +110,25 @@ public class GridViewTest {
 
         assertThat(gridView.getCellPane(gridModel.getCell(0, 0)).getChildren()).contains(emptyLabel);
         assertThat(gridView.getCellPane(gridModel.getCell(0,1)).getChildren()).contains(filledButton);
+    }
+
+    @Test
+    public void testClickListener()throws Exception{
+        gridModel.setNumberOfColumns(3);
+        gridModel.setNumberOfRows(3);
+
+        CompletableFuture<String> testFuture = new CompletableFuture<>();
+
+        gridModel.getCell(1,1).setOnClick(event -> {
+            testFuture.complete("clicked");
+        });
+
+        final Pane cellPane = gridView.getCellPane(gridModel.getCell(1, 1));
+
+        final MouseEvent event = new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null);
+
+        Event.fireEvent(cellPane, event);
+        assertThat(testFuture.get()).isEqualTo("clicked");
     }
 }
 
