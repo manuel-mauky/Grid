@@ -29,15 +29,9 @@ allprojects {
 }
 
 
-jacoco {
-    toolVersion = "0.7.0.201403182114"
-}
-
 sonarRunner {
     sonarProperties {
         properties["sonar.libraries"] += System.env.'JAVA_HOME' + "/jre/lib/ext/jfxrt.jar"
-        property 'sonar.jacoco.reportPath', "${buildDir}/jacoco/test.exec"
-        property 'sonar.junit.reportsPath', "${buildDir}/test-results"
     }
 }
 
@@ -139,8 +133,6 @@ uploadArchives {
         }
     }
 }
-
-import org.gradle.plugins.signing.Sign
 
 gradle.taskGraph.whenReady { taskGraph ->
     if (taskGraph.allTasks.any { it instanceof Sign }) {
