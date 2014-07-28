@@ -6,6 +6,11 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 
+/**
+ * This class represents a single Cell of the grid. It is created and managed by the {@link eu.lestard.grid.GridModel}.
+ *
+ * @param <State> the generic type of states that the cell can have. The state needs to be an enum.
+ */
 public class Cell <State extends Enum> {
 
     private final int column;
@@ -16,37 +21,67 @@ public class Cell <State extends Enum> {
 
     private ObjectProperty<State> state = new SimpleObjectProperty<>();
 
-
-    public Cell(final int column, final int row){
+    /**
+     * New cells my not be created by the user. They are created by the {@link eu.lestard.grid.GridModel} only.
+     *
+     * @param column the column of the cell
+     * @param row the row of the cell
+     */
+    Cell(final int column, final int row){
         this.column = column;
         this.row = row;
     }
 
+    /**
+     * @return the state as read only property.
+     */
     public ReadOnlyObjectProperty<State> stateProperty(){
         return state;
     }
 
+    /**
+     * @return the current state of this cell.
+     */
     public State getState(){
         return state.get();
     }
 
+    /**
+     * This method is used to change the state of this cell.
+     *
+     * @param newState the new state.
+     */
     public void changeState(State newState){
         state.setValue(newState);
     }
 
+    /**
+     * @return the column where this cell is located in the grid.
+     */
     public int getColumn() {
         return column;
     }
 
+    /**
+     * @return the row where this cell is located in the grid.
+     */
     public int getRow() {
         return row;
     }
 
+    /**
+     * Set an event handler that is called when this cell is clicked by the user.
+     *
+     * @param eventHandler the event handler.
+     */
     public void setOnClick(EventHandler<MouseEvent> eventHandler){
         this.onClick.set(eventHandler);
     }
 
-    public ObjectProperty<EventHandler<MouseEvent>> onClickProperty(){
+    /**
+     * @return an Object property containing the onClick handler.
+     */
+    ObjectProperty<EventHandler<MouseEvent>> onClickProperty(){
         return onClick;
     }
 
