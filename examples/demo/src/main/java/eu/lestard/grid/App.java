@@ -71,18 +71,18 @@ public class App extends Application{
         // every time a new cell is added, we add an click listener to it.
         gridModel.setOnCellAddedHandler((cell)->{
             // the click handler switches the state of the cells
-            cell.setOnClick((event) -> {
-                final States stateBefore = cell.getState();
-                if (stateBefore == States.A) {
-                    cell.changeState(States.B);
-                } else {
-                    cell.changeState(States.A);
+            cell.setOnClick(event -> switchStates(cell));
+
+            // move over cells with pressed mouse button will switch states
+            cell.setOnMouseOver(event -> {
+                if(event.isPrimaryButtonDown()){
+                    switchStates(cell);
                 }
             });
         });
 
 
-        // bind the number of rows/colums in the grid model
+        // bind the number of rows/columns in the grid model
         gridModel.numberOfColumns().bind(numberOfColumns);
         gridModel.numberOfRows().bind(numberOfRows);
 
@@ -92,6 +92,15 @@ public class App extends Application{
         stage.show();
     }
 
+
+    private void switchStates(Cell<States> cell){
+        final States stateBefore = cell.getState();
+        if (stateBefore == States.A) {
+            cell.changeState(States.B);
+        } else {
+            cell.changeState(States.A);
+        }
+    }
 
     /**
      * Create a controls panel so that we can control the grid properties.

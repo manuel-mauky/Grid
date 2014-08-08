@@ -19,6 +19,8 @@ public class Cell <State extends Enum> {
 
     private ObjectProperty<EventHandler<MouseEvent>> onClick = new SimpleObjectProperty<>();
 
+    private ObjectProperty<EventHandler<MouseEvent>> onMouseOver = new SimpleObjectProperty<>();
+
     private ObjectProperty<State> state = new SimpleObjectProperty<>();
 
     /**
@@ -83,6 +85,24 @@ public class Cell <State extends Enum> {
      */
     ObjectProperty<EventHandler<MouseEvent>> onClickProperty(){
         return onClick;
+    }
+
+
+    /**
+     * Set an event handler that is called when the mouse is moving over this cell.
+     *
+     * @param eventHandler the event handler.
+     */
+    public void setOnMouseOver(EventHandler<MouseEvent> eventHandler){
+        this.onMouseOver.set(eventHandler);
+    }
+
+
+    /**
+     * @return an Object property containing the onMouseOver handler.
+     */
+    ObjectProperty<EventHandler<MouseEvent>> onMouseOverProperty(){
+        return onMouseOver;
     }
 
     @Override

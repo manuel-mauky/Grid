@@ -7,6 +7,7 @@ import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -55,6 +56,7 @@ public class GridView<State extends Enum> extends StackPane {
                 initGridModel();
             }
         });
+
     }
 
     /**
@@ -136,17 +138,50 @@ public class GridView<State extends Enum> extends StackPane {
             updateCell(pane, cell);
         });
 
-        pane.addEventHandler(MouseEvent.MOUSE_CLICKED, (event) -> {
-            final EventHandler<MouseEvent> eventHandler = cell.onClickProperty().get();
 
-            if (eventHandler != null) {
-                eventHandler.handle(event);
-            }
-        });
+
+        initMouseOverFilter(pane, cell);
+
+
+        // mouse click handler
+        pane.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> fireEventHandler(event, cell.onClickProperty()));
 
         rectangleMap.put(cell, pane);
 
         rootPane.getChildren().add(pane);
+    }
+
+    /**
+     * This method initialized the filters that are needed for the mouse over click handler of the cell (see {@link eu.lestard.grid.Cell#setOnMouseOver(javafx.event.EventHandler)}.
+     *
+     *
+     * @param pane
+     * @param cell
+     */
+    private void initMouseOverFilter(Pane pane, Cell<State> cell){
+        // When no mouse button is pressed, this event handler is used.
+        pane.addEventHandler(MouseEvent.MOUSE_ENTERED, event-> fireEventHandler(event, cell.onMouseOverProperty()));
+
+
+        // when a mouse button is pressed, we need a special treatment because JavaFX switches to Drag-And-Drop gesture.
+
+        // this is called when the user clicks on a cell and moves the mouse while holding the mouse button
+        pane.addEventFilter(MouseEvent.DRAG_DETECTED, event->{
+            pane.startFullDrag();
+            pane.setMouseTransparent(true);
+
+            fireEventHandler(event, cell.onMouseOverProperty());
+        });
+
+        pane.addEventFilter(MouseEvent.MOUSE_RELEASED, event-> pane.setMouseTransparent(false));
+        pane.addEventFilter(MouseDragEvent.MOUSE_DRAG_ENTERED, event-> fireEventHandler(event, cell.onMouseOverProperty()));
+
+    }
+
+    private void fireEventHandler(MouseEvent event, ObjectProperty<EventHandler<MouseEvent>> handler){
+        if(handler.isNotNull().get()){
+            handler.get().handle(event);
+        }
     }
 
     private void updateAllCells() {
