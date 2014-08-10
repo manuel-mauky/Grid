@@ -39,11 +39,14 @@ public class GridView<State extends Enum> extends StackPane {
 
     private Map<Cell<State>, Pane> rectangleMap = new HashMap<>();
 
-    private ObjectProperty<Paint> strokeProperty = new SimpleObjectProperty<>(Color.LIGHTGREY);
+    private ObjectProperty<Paint> cellBorderColorProperty = new SimpleObjectProperty<>(Color.LIGHTGREY);
 
-    private DoubleProperty strokeWidthProperty = new SimpleDoubleProperty(1);
+    private DoubleProperty cellBorderWidthProperty = new SimpleDoubleProperty(1);
 
     private DoubleProperty cellSquareSize = new SimpleDoubleProperty();
+
+    private ObjectProperty<Border> cellBorderProperty = new SimpleObjectProperty<>();
+
 
     /**
      * Create a new instance of the GridView.
@@ -57,6 +60,9 @@ public class GridView<State extends Enum> extends StackPane {
             }
         });
 
+        updateCellBorder();
+        cellBorderWidthProperty.addListener((obs, oldValue, newValue)-> updateCellBorder());
+        cellBorderColorProperty.addListener((obs, oldValue, newValue)-> updateCellBorder());
     }
 
     /**
@@ -121,22 +127,12 @@ public class GridView<State extends Enum> extends StackPane {
         pane.minHeightProperty().bind(pxPerCell);
         pane.maxHeightProperty().bind(pxPerCell);
 
-        updateCell(pane, cell);
+        updateCellFill(pane, cell);
 
-        updateStroke(pane);
-        strokeProperty().addListener((obs, oldV, newV) -> {
-            if (newV != null) {
-                updateStroke(pane);
-            }
-        });
+        pane.borderProperty().bind(cellBorderProperty);
 
-        strokeWidthProperty().addListener((obs, oldV, newV) -> {
-            updateStroke(pane);
-        });
+        cell.stateProperty().addListener((obs, oldValue, newValue) -> updateCellFill(pane, cell));
 
-        cell.stateProperty().addListener((obs, oldValue, newValue) -> {
-            updateCell(pane, cell);
-        });
 
 
 
@@ -185,10 +181,7 @@ public class GridView<State extends Enum> extends StackPane {
     }
 
     private void updateAllCells() {
-        rectangleMap.forEach((cell, pane) -> {
-            updateCell(pane, cell);
-            updateStroke(pane);
-        });
+        rectangleMap.forEach((cell, pane) -> updateCellFill(pane, cell));
     }
 
 
@@ -196,7 +189,7 @@ public class GridView<State extends Enum> extends StackPane {
         return rectangleMap.get(cell);
     }
 
-    private void updateCell(Pane pane, Cell<State> cell) {
+    private void updateCellFill(Pane pane, Cell<State> cell) {
         pane.setBackground(new Background(new BackgroundFill(colorMapping.get(cell.getState()), CornerRadii.EMPTY,
             Insets.EMPTY)));
         pane.getChildren().clear();
@@ -206,11 +199,11 @@ public class GridView<State extends Enum> extends StackPane {
         }
     }
 
-    private void updateStroke(Pane pane) {
-        BorderWidths widths = new BorderWidths(strokeWidthProperty().get());
-        BorderStroke stroke = new BorderStroke(strokeProperty().get(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
+    private void updateCellBorder() {
+        BorderWidths widths = new BorderWidths(cellBorderWidthProperty.get());
+        BorderStroke stroke = new BorderStroke(cellBorderColorProperty.get(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
             widths);
-        pane.setBorder(new Border(stroke));
+        cellBorderProperty.set(new Border(stroke));
     }
 
     public void setGridModel(GridModel<State> gridModel) {
@@ -312,22 +305,27 @@ public class GridView<State extends Enum> extends StackPane {
     }
 
     /**
-     * The width of the stroke of the grid cells.
+     * The width of the borders around each cell in the grid.
+     *
+     * Default value is: 1.
      *
      * @return the width as double property.
      */
-    public DoubleProperty strokeWidthProperty() {
-        return strokeWidthProperty;
+    public DoubleProperty cellBorderWidthProperty() {
+        return cellBorderWidthProperty;
     }
 
     /**
-     * The paint that is used as Stroke for the grid cells.
+     * The color of the borders around each cell in the grid.
      *
-     * @return the stroke paint as object property.
+     * Default value is: {@link Color#LIGHTGREY}.
+     *
+     * @return the border color as object property.
      */
-    public ObjectProperty<Paint> strokeProperty() {
-        return strokeProperty;
+    public ObjectProperty<Paint> cellBorderColorProperty() {
+        return cellBorderColorProperty;
     }
+
 
     Pane getRootPane() {
         return rootPane;
