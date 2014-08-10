@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +26,7 @@ import java.util.function.Function;
  *
  * After that you can define what the grid will look like when a cell gets a specific State.
  *
- * @param <State>
+ * @param <State> the generic enum type that defines the states that the grid view can show.
  */
 public class GridView<State extends Enum> extends StackPane {
 
@@ -39,19 +40,25 @@ public class GridView<State extends Enum> extends StackPane {
 
     private Map<Cell<State>, Pane> rectangleMap = new HashMap<>();
 
-    private ObjectProperty<Paint> cellBorderColorProperty = new SimpleObjectProperty<>(Color.LIGHTGREY);
-
-    private DoubleProperty cellBorderWidthProperty = new SimpleDoubleProperty(1);
-
     private DoubleProperty cellSquareSize = new SimpleDoubleProperty();
 
+
+    private ObjectProperty<Paint> cellBorderColorProperty = new SimpleObjectProperty<>(Color.LIGHTGREY);
+    private DoubleProperty cellBorderWidthProperty = new SimpleDoubleProperty(1);
     private ObjectProperty<Border> cellBorderProperty = new SimpleObjectProperty<>();
 
+
+    private DoubleProperty gridBorderWidthProperty = new SimpleDoubleProperty(0);
+    private ObjectProperty<Paint> gridBorderColorProperty = new SimpleObjectProperty<>(Color.TRANSPARENT);
+
+
+    private Rectangle gridBackground = new Rectangle();
 
     /**
      * Create a new instance of the GridView.
      */
     public GridView() {
+        this.getChildren().add(gridBackground);
         this.getChildren().add(rootPane);
 
         gridModelProperty.addListener((obs, oldValue, newValue) -> {
@@ -71,8 +78,12 @@ public class GridView<State extends Enum> extends StackPane {
      *
      */
     private void initGridModel() {
-        NumberBinding widthPerCell = this.widthProperty().divide(getGridModel().numberOfColumns());
-        NumberBinding heightPerCell = this.heightProperty().divide(getGridModel().numberOfRows());
+        NumberBinding widthPerCell = this.widthProperty()
+            .subtract(gridBorderWidthProperty.multiply(2))
+            .divide(getGridModel().numberOfColumns());
+        NumberBinding heightPerCell = this.heightProperty()
+            .subtract(gridBorderWidthProperty.multiply(2))
+            .divide(getGridModel().numberOfRows());
 
         NumberBinding pxPerCell = Bindings.min(widthPerCell, heightPerCell);
 
@@ -83,6 +94,14 @@ public class GridView<State extends Enum> extends StackPane {
 
         rootPane.maxWidthProperty().bind(rootWidth);
         rootPane.maxHeightProperty().bind(rootHeight);
+
+
+        gridBackground.widthProperty().bind(rootWidth.add(gridBorderWidthProperty.multiply(2)));
+        gridBackground.heightProperty().bind(rootHeight.add(gridBorderWidthProperty.multiply(2)));
+        gridBackground.fillProperty().bind(gridBorderColorProperty);
+
+
+
 
         gridModelProperty.get().getCells().forEach(cell -> {
             addedCell(pxPerCell, cell);
@@ -326,6 +345,28 @@ public class GridView<State extends Enum> extends StackPane {
         return cellBorderColorProperty;
     }
 
+
+    /**
+     * The width of the border around the whole grid.
+     *
+     * Default value is: 0.
+     *
+     * @return the width as double property.
+     */
+    public DoubleProperty gridBorderWidthProperty(){
+        return gridBorderWidthProperty;
+    }
+
+    /**
+     * The color of the border around the whole grid.
+     *
+     * Default value is: {@link Color#TRANSPARENT}.
+     *
+     * @return the border color as object property.
+     */
+    public ObjectProperty<Paint> gridBorderColorProperty(){
+        return gridBorderColorProperty;
+    }
 
     Pane getRootPane() {
         return rootPane;
