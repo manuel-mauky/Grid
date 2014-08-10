@@ -209,7 +209,12 @@ public class GridView<State extends Enum> extends StackPane {
     }
 
     private void updateCellFill(Pane pane, Cell<State> cell) {
-        pane.setBackground(new Background(new BackgroundFill(colorMapping.get(cell.getState()), CornerRadii.EMPTY,
+        Color backgroundColor = Color.WHITE; // default color
+        if(colorMapping.containsKey(cell.getState())){
+            backgroundColor = colorMapping.get(cell.getState());
+        }
+
+        pane.setBackground(new Background(new BackgroundFill(backgroundColor, CornerRadii.EMPTY,
             Insets.EMPTY)));
         pane.getChildren().clear();
         final Function<Cell<State>, Node> nodeSupplier = nodeMapping.get(cell.getState());
