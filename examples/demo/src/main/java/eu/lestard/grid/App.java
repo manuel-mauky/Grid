@@ -2,8 +2,7 @@ package eu.lestard.grid;
 
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -34,6 +33,8 @@ public class App extends Application{
     private IntegerProperty numberOfRows = new SimpleIntegerProperty(9);
     private IntegerProperty numberOfColumns = new SimpleIntegerProperty(8);
 
+    private IntegerProperty cellBorderWidth = new SimpleIntegerProperty(1);
+
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("Grid");
@@ -61,8 +62,8 @@ public class App extends Application{
 
 
         // styling of the strokes between the cells
-        gridView.strokeProperty().set(Color.BLACK);
-        gridView.strokeWidthProperty().set(1);
+        gridView.cellBorderColorProperty().set(Color.BLACK);
+        gridView.cellBorderWidthProperty().set(1);
 
 
 
@@ -85,6 +86,9 @@ public class App extends Application{
         // bind the number of rows/columns in the grid model
         gridModel.numberOfColumns().bind(numberOfColumns);
         gridModel.numberOfRows().bind(numberOfRows);
+
+
+        gridView.cellBorderWidthProperty().bind(cellBorderWidth);
 
         root.setBottom(createControls());
 
@@ -111,38 +115,34 @@ public class App extends Application{
         controlsBox.setPadding(new Insets(10));
 
 
-        HBox numberOfRowsBox = new HBox();
-        numberOfRowsBox.setSpacing(5);
-        Label numberOfRowsLabel = new Label();
-        Slider numberOfRowsSlider = new Slider();
-        numberOfRowsBox.getChildren().addAll(numberOfRowsLabel, numberOfRowsSlider);
+        HBox numberOfRowsBox = createNumberControl("Rows:", numberOfRows, 3, 30);
 
+        HBox numberOfColumnsBox = createNumberControl("Columns:", numberOfColumns, 3, 30);
 
-        numberOfRowsLabel.textProperty().bind(Bindings.concat("Rows: ", numberOfRows));
-        numberOfRowsSlider.valueProperty().bindBidirectional(numberOfRows);
+        HBox cellBorderWidthBox = createNumberControl("Cell Border Width:", cellBorderWidth, 0, 5);
 
-        numberOfRowsSlider.setMin(3);
-        numberOfRowsSlider.setMax(30);
-
-
-
-
-        HBox numberOfColumnsBox = new HBox();
-        numberOfColumnsBox.setSpacing(5);
-        Label numberOfColumnsLabel = new Label();
-        Slider numberOfColumnsSlider = new Slider();
-        numberOfColumnsBox.getChildren().addAll(numberOfColumnsLabel, numberOfColumnsSlider);
-
-        numberOfColumnsLabel.textProperty().bind(Bindings.concat("Columns:", numberOfColumns));
-        numberOfColumnsSlider.valueProperty().bindBidirectional(numberOfColumns);
-
-        numberOfColumnsSlider.setMin(3);
-        numberOfColumnsSlider.setMax(30);
-
-
-        controlsBox.getChildren().addAll(numberOfRowsBox, numberOfColumnsBox);
+        controlsBox.getChildren().addAll(numberOfRowsBox, numberOfColumnsBox, cellBorderWidthBox);
 
         return controlsBox;
+    }
+
+    private HBox createNumberControl(String labelString, Property<Number> numberValue, double min, double max){
+        HBox control = new HBox();
+
+        control.setSpacing(5);
+
+        Label label = new Label();
+        Slider slider = new Slider();
+        control.getChildren().addAll(label, slider);
+
+
+        label.textProperty().bind(Bindings.concat(labelString, numberValue));
+        slider.valueProperty().bindBidirectional(numberValue);
+
+        slider.setMin(min);
+        slider.setMax(max);
+
+        return control;
     }
 }
 
