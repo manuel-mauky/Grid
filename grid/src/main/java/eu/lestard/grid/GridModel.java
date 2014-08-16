@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class GridModel<State extends Enum> {
+public class GridModel<State> {
 
     private final ObservableList<Cell<State>> cells = FXCollections.observableArrayList();
     private final IntegerProperty numberOfRows = new SimpleIntegerProperty();

@@ -17,7 +17,7 @@ dependencies {
     testCompile "eu.lestard:assertj-javafx:0.1.1"
     testCompile "junit:junit:4.11"
 
-    testCompile "de.saxsys:jfx-testrunner:1.0"
+    testCompile "de.saxsys:jfx-testrunner:1.1"
 }
 
 allprojects {

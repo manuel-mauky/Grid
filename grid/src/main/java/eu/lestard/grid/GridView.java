@@ -28,7 +28,7 @@ import java.util.function.Function;
  *
  * @param <State> the generic enum type that defines the states that the grid view can show.
  */
-public class GridView<State extends Enum> extends StackPane {
+public class GridView<State> extends StackPane {
 
     private Pane rootPane = new Pane();
 

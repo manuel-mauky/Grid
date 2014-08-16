@@ -11,7 +11,7 @@ import javafx.scene.input.MouseEvent;
  *
  * @param <State> the generic type of states that the cell can have. The state needs to be an enum.
  */
-public class Cell <State extends Enum> {
+public class Cell <State> {
 
     private final int column;
 
