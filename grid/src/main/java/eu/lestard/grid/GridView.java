@@ -36,20 +36,20 @@ public class GridView<State> extends StackPane {
 
     private Map<State, Function<Cell<State>, Node>> nodeMapping = new HashMap<>();
 
-    private ObjectProperty<GridModel<State>> gridModelProperty = new SimpleObjectProperty<>();
+    private ObjectProperty<GridModel<State>> gridModel = new SimpleObjectProperty<>();
 
     private Map<Cell<State>, Pane> rectangleMap = new HashMap<>();
 
     private DoubleProperty cellSquareSize = new SimpleDoubleProperty();
 
 
-    private ObjectProperty<Paint> cellBorderColorProperty = new SimpleObjectProperty<>(Color.LIGHTGREY);
-    private DoubleProperty cellBorderWidthProperty = new SimpleDoubleProperty(1);
-    private ObjectProperty<Border> cellBorderProperty = new SimpleObjectProperty<>();
+    private ObjectProperty<Paint> cellBorderColor = new SimpleObjectProperty<>(Color.LIGHTGREY);
+    private DoubleProperty cellBorderWidth = new SimpleDoubleProperty(1);
+    private ObjectProperty<Border> cellBorder = new SimpleObjectProperty<>();
 
 
-    private DoubleProperty gridBorderWidthProperty = new SimpleDoubleProperty(0);
-    private ObjectProperty<Paint> gridBorderColorProperty = new SimpleObjectProperty<>(Color.TRANSPARENT);
+    private DoubleProperty gridBorderWidth = new SimpleDoubleProperty(0);
+    private ObjectProperty<Paint> gridBorderColor = new SimpleObjectProperty<>(Color.TRANSPARENT);
 
 
     private Rectangle gridBackground = new Rectangle();
@@ -61,15 +61,15 @@ public class GridView<State> extends StackPane {
         this.getChildren().add(gridBackground);
         this.getChildren().add(rootPane);
 
-        gridModelProperty.addListener((obs, oldValue, newValue) -> {
+        gridModel.addListener((obs, oldValue, newValue) -> {
             if (newValue != null) {
                 initGridModel();
             }
         });
 
         updateCellBorder();
-        cellBorderWidthProperty.addListener((obs, oldValue, newValue)-> updateCellBorder());
-        cellBorderColorProperty.addListener((obs, oldValue, newValue)-> updateCellBorder());
+        cellBorderWidth.addListener((obs, oldValue, newValue) -> updateCellBorder());
+        cellBorderColor.addListener((obs, oldValue, newValue) -> updateCellBorder());
     }
 
     /**
@@ -79,10 +79,10 @@ public class GridView<State> extends StackPane {
      */
     private void initGridModel() {
         NumberBinding widthPerCell = this.widthProperty()
-            .subtract(gridBorderWidthProperty.multiply(2))
+            .subtract(gridBorderWidth.multiply(2))
             .divide(getGridModel().numberOfColumns());
         NumberBinding heightPerCell = this.heightProperty()
-            .subtract(gridBorderWidthProperty.multiply(2))
+            .subtract(gridBorderWidth.multiply(2))
             .divide(getGridModel().numberOfRows());
 
         NumberBinding pxPerCell = Bindings.min(widthPerCell, heightPerCell);
@@ -96,18 +96,18 @@ public class GridView<State> extends StackPane {
         rootPane.maxHeightProperty().bind(rootHeight);
 
 
-        gridBackground.widthProperty().bind(rootWidth.add(gridBorderWidthProperty.multiply(2)));
-        gridBackground.heightProperty().bind(rootHeight.add(gridBorderWidthProperty.multiply(2)));
-        gridBackground.fillProperty().bind(gridBorderColorProperty);
+        gridBackground.widthProperty().bind(rootWidth.add(gridBorderWidth.multiply(2)));
+        gridBackground.heightProperty().bind(rootHeight.add(gridBorderWidth.multiply(2)));
+        gridBackground.fillProperty().bind(gridBorderColor);
 
 
 
 
-        gridModelProperty.get().getCells().forEach(cell -> {
+        gridModel.get().getCells().forEach(cell -> {
             addedCell(pxPerCell, cell);
         });
 
-        gridModelProperty.get().cells().addListener((ListChangeListener<Cell<State>>) change -> {
+        gridModel.get().cells().addListener((ListChangeListener<Cell<State>>) change -> {
             while (change.next()) {
 
                 if (change.wasAdded()) {
@@ -148,7 +148,7 @@ public class GridView<State> extends StackPane {
 
         updateCellFill(pane, cell);
 
-        pane.borderProperty().bind(cellBorderProperty);
+        pane.borderProperty().bind(cellBorder);
 
         cell.stateProperty().addListener((obs, oldValue, newValue) -> updateCellFill(pane, cell));
 
@@ -224,18 +224,18 @@ public class GridView<State> extends StackPane {
     }
 
     private void updateCellBorder() {
-        BorderWidths widths = new BorderWidths(cellBorderWidthProperty.get());
-        BorderStroke stroke = new BorderStroke(cellBorderColorProperty.get(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
+        BorderWidths widths = new BorderWidths(cellBorderWidth.get());
+        BorderStroke stroke = new BorderStroke(cellBorderColor.get(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
             widths);
-        cellBorderProperty.set(new Border(stroke));
+        cellBorder.set(new Border(stroke));
     }
 
     public void setGridModel(GridModel<State> gridModel) {
-        gridModelProperty.set(gridModel);
+        this.gridModel.set(gridModel);
     }
 
     public GridModel<State> getGridModel() {
-        return gridModelProperty.get();
+        return gridModel.get();
     }
 
     public void addColorMapping(State state, Color color) {
@@ -336,7 +336,7 @@ public class GridView<State> extends StackPane {
      * @return the width as double property.
      */
     public DoubleProperty cellBorderWidthProperty() {
-        return cellBorderWidthProperty;
+        return cellBorderWidth;
     }
 
     /**
@@ -347,7 +347,7 @@ public class GridView<State> extends StackPane {
      * @return the border color as object property.
      */
     public ObjectProperty<Paint> cellBorderColorProperty() {
-        return cellBorderColorProperty;
+        return cellBorderColor;
     }
 
 
@@ -359,7 +359,7 @@ public class GridView<State> extends StackPane {
      * @return the width as double property.
      */
     public DoubleProperty gridBorderWidthProperty(){
-        return gridBorderWidthProperty;
+        return gridBorderWidth;
     }
 
     /**
@@ -370,12 +370,11 @@ public class GridView<State> extends StackPane {
      * @return the border color as object property.
      */
     public ObjectProperty<Paint> gridBorderColorProperty(){
-        return gridBorderColorProperty;
+        return gridBorderColor;
     }
 
     Pane getRootPane() {
         return rootPane;
     }
-
 
 }
