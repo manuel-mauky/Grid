@@ -1,9 +1,15 @@
 package eu.lestard.grid;
 
+import eu.lestard.advanced_bindings.api.NumberBindings;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.IntegerExpression;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -12,6 +18,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 import java.util.HashMap;
@@ -31,6 +38,8 @@ import java.util.function.Function;
 public class GridView<State> extends StackPane {
 
     private Pane rootPane = new Pane();
+
+    private Pane guidelinePane = new Pane();
 
     private Map<State, Color> colorMapping = new HashMap<>();
 
@@ -52,7 +61,25 @@ public class GridView<State> extends StackPane {
     private ObjectProperty<Paint> gridBorderColor = new SimpleObjectProperty<>(Color.TRANSPARENT);
 
 
+    private IntegerProperty majorGuidelineUnit = new SimpleIntegerProperty(0);
+    ObservableList<Integer> majorHorizontalGuidelines = FXCollections.observableArrayList();
+    ObservableList<Integer> majorVerticalGuidelines = FXCollections.observableArrayList();
+    private ObjectProperty<Color> majorGuidelineColor= new SimpleObjectProperty<>(Color.TRANSPARENT);
+    private DoubleProperty majorGuidelineStrokeWidth = new SimpleDoubleProperty(5);
+
+
+    // Todo implement minor guidelines
+    private IntegerProperty minorGuidelineUnit = new SimpleIntegerProperty(0);
+    ObservableList<Integer> minorHorizontalGuidelines = FXCollections.observableArrayList();
+    ObservableList<Integer> minorVerticalGuidelines = FXCollections.observableArrayList();
+    private ObjectProperty<Color> minorGuidelineColor= new SimpleObjectProperty<>(Color.TRANSPARENT);
+
+
     private Rectangle gridBackground = new Rectangle();
+
+    // don't inline these bindings to prevent errors with Garbage Collection
+    private NumberBinding numberOfHorizontalMajorGuidelines;
+    private NumberBinding numberOfVerticalMajorGuidelines;
 
     /**
      * Create a new instance of the GridView.
@@ -60,6 +87,9 @@ public class GridView<State> extends StackPane {
     public GridView() {
         this.getChildren().add(gridBackground);
         this.getChildren().add(rootPane);
+
+        guidelinePane.setMouseTransparent(true);
+        this.getChildren().add(guidelinePane);
 
         gridModel.addListener((obs, oldValue, newValue) -> {
             if (newValue != null) {
@@ -89,6 +119,7 @@ public class GridView<State> extends StackPane {
 
         cellSquareSize.bind(pxPerCell);
 
+
         NumberBinding rootWidth = pxPerCell.multiply(getGridModel().numberOfColumns());
         NumberBinding rootHeight = pxPerCell.multiply(getGridModel().numberOfRows());
 
@@ -102,6 +133,49 @@ public class GridView<State> extends StackPane {
 
 
 
+        guidelinePane.maxWidthProperty().bind(rootPane.widthProperty());
+        guidelinePane.maxHeightProperty().bind(rootPane.heightProperty());
+
+
+        initMajorGuidelinesBindings();
+
+        final InvalidationListener guidelineRepaintListener = (Observable observable) -> {
+            guidelinePane.getChildren().clear();
+
+
+            majorVerticalGuidelines.forEach(row -> {
+                Line major = new Line();
+
+                major.startYProperty().bind(majorGuidelineStrokeWidth.divide(2));
+                major.startXProperty().bind(cellSquareSize.multiply(row));
+
+                major.endYProperty().bind(gridBackground.heightProperty().subtract(majorGuidelineStrokeWidth));
+                major.endXProperty().bind(cellSquareSize.multiply(row));
+
+                major.strokeProperty().bind(majorGuidelineColor);
+                major.strokeWidthProperty().bind(majorGuidelineStrokeWidth);
+
+                guidelinePane.getChildren().add(major);
+            });
+
+            majorHorizontalGuidelines.forEach(column -> {
+                Line major = new Line();
+
+                major.startYProperty().bind(cellSquareSize.multiply(column));
+                major.startXProperty().bind(majorGuidelineStrokeWidth.divide(2));
+
+                major.endYProperty().bind(cellSquareSize.multiply(column));
+                major.endXProperty().bind(gridBackground.widthProperty().subtract(majorGuidelineStrokeWidth));
+
+                major.strokeProperty().bind(majorGuidelineColor);
+                major.strokeWidthProperty().bind(majorGuidelineStrokeWidth);
+
+                guidelinePane.getChildren().add(major);
+            });
+        };
+
+        majorHorizontalGuidelines.addListener(guidelineRepaintListener);
+        majorVerticalGuidelines.addListener(guidelineRepaintListener);
 
         gridModel.get().getCells().forEach(cell -> {
             addedCell(pxPerCell, cell);
@@ -128,6 +202,41 @@ public class GridView<State> extends StackPane {
         });
 
     }
+
+    private void initMajorGuidelinesBindings(){
+        numberOfHorizontalMajorGuidelines = createNumberOfGuidelinesBinding(getGridModel().numberOfRows());
+
+        numberOfHorizontalMajorGuidelines.addListener((obs, oldValue, newValue) -> {
+            majorHorizontalGuidelines.clear();
+
+            int number = newValue.intValue();
+            int offset = majorGuidelineUnit.get();
+
+            for (int i = 1; i <= number; i++) {
+                majorHorizontalGuidelines.add(i * offset);
+            }
+        });
+        numberOfVerticalMajorGuidelines = createNumberOfGuidelinesBinding(getGridModel().numberOfColumns());
+
+        numberOfVerticalMajorGuidelines.addListener((obs, oldValue, newValue) -> {
+            majorVerticalGuidelines.clear();
+
+            int number = newValue.intValue();
+            int offset = majorGuidelineUnit.get();
+
+            for (int i = 1; i <= number; i++) {
+                majorVerticalGuidelines.add(i * offset);
+            }
+        });
+
+    }
+
+
+    NumberBinding createNumberOfGuidelinesBinding(IntegerExpression base){
+        return NumberBindings.divideSafe(base.subtract(1), majorGuidelineUnit);
+    }
+
+
 
     /**
      * This method is called when new cells are added in the grid model.
@@ -377,4 +486,25 @@ public class GridView<State> extends StackPane {
         return rootPane;
     }
 
+
+    public IntegerProperty majorGuidelineUnitProperty(){
+        return majorGuidelineUnit;
+    }
+
+    public ObjectProperty<Color> majorGuidelineColorProperty(){
+        return majorGuidelineColor;
+    }
+
+
+    public IntegerProperty minorGuidelineUnitProperty(){
+        return minorGuidelineUnit;
+    }
+
+    public ObjectProperty<Color> minorGuidelineColorProperty(){
+        return minorGuidelineColor;
+    }
+
+    public DoubleProperty majorGuidelineStrokeWidth(){
+        return majorGuidelineStrokeWidth;
+    }
 }

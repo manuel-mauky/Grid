@@ -8,13 +8,19 @@ apply plugin: "jacoco"
 
 repositories {
     mavenCentral()
+    maven{
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
 }
 
 
 dependencies {
+
+    compile 'eu.lestard:advanced-bindings:0.2.0'
+
     // testing
     testCompile "org.assertj:assertj-core:1.6.0"
-    testCompile "eu.lestard:assertj-javafx:0.1.1"
+    testCompile "eu.lestard:assertj-javafx:0.1.2-SNAPSHOT"
     testCompile "junit:junit:4.11"
 
     testCompile "de.saxsys:jfx-testrunner:1.1"

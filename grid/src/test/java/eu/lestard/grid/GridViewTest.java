@@ -1,6 +1,7 @@
 package eu.lestard.grid;
 
 import de.saxsys.javafx.test.JfxRunner;
+import javafx.beans.binding.NumberBinding;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.scene.Node;
@@ -16,7 +17,8 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.CompletableFuture;
 
-import static org.assertj.core.api.Assertions.*;
+import static eu.lestard.assertj.javafx.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(JfxRunner.class)
 public class GridViewTest {
@@ -129,6 +131,82 @@ public class GridViewTest {
 
         Event.fireEvent(cellPane, event);
         assertThat(testFuture.get()).isEqualTo("clicked");
+    }
+
+
+    @Test
+    public void testMajorGuidelines(){
+
+        assertThat(gridView.majorHorizontalGuidelines).isEmpty();
+        assertThat(gridView.majorVerticalGuidelines).isEmpty();
+
+        gridModel.setNumberOfColumns(5);
+        gridModel.setNumberOfRows(5);
+
+//        assertThat(gridView.majorHorizontalGuidelines).isEmpty();
+        assertThat(gridView.majorVerticalGuidelines).isEmpty();
+
+        gridView.majorGuidelineUnitProperty().set(3);
+
+        assertThat(gridView.majorHorizontalGuidelines).contains(3);
+        assertThat(gridView.majorVerticalGuidelines).contains(3);
+
+        gridModel.setNumberOfColumns(10);
+
+        assertThat(gridView.majorHorizontalGuidelines).containsOnly(3);
+        assertThat(gridView.majorVerticalGuidelines).containsOnly(3, 6, 9);
+
+        gridModel.setNumberOfRows(12);
+
+        // no 12! it won't lay a guideline directly on the border of the grid
+        assertThat(gridView.majorHorizontalGuidelines).containsOnly(3, 6, 9);
+        assertThat(gridView.majorVerticalGuidelines).containsOnly(3, 6, 9);
+
+        gridModel.setNumberOfRows(13);
+        assertThat(gridView.majorHorizontalGuidelines).containsOnly(3, 6, 9, 12);
+        assertThat(gridView.majorVerticalGuidelines).containsOnly(3, 6, 9);
+
+        gridView.majorGuidelineUnitProperty().set(4);
+
+        assertThat(gridView.majorHorizontalGuidelines).containsOnly(4, 8, 12);
+        assertThat(gridView.majorVerticalGuidelines).containsOnly(4, 8);
+    }
+
+    @Test
+    public void testNumberOfGuidelines(){
+        final NumberBinding numberOfGuidelines = gridView.createNumberOfGuidelinesBinding(gridModel.numberOfColumns());
+
+        assertThat(numberOfGuidelines).hasValue(0);
+
+        gridModel.setNumberOfRows(5);
+        gridModel.setNumberOfColumns(5);
+
+        assertThat(numberOfGuidelines).hasValue(0);
+
+
+        gridView.majorGuidelineUnitProperty().set(3);
+        assertThat(numberOfGuidelines).hasValue(1);
+
+        gridView.majorGuidelineUnitProperty().set(4);
+        assertThat(numberOfGuidelines).hasValue(1);
+
+        gridView.majorGuidelineUnitProperty().set(2);
+        assertThat(numberOfGuidelines).hasValue(2);
+
+        gridModel.setNumberOfColumns(6);
+        assertThat(numberOfGuidelines).hasValue(2);
+
+        gridModel.setNumberOfColumns(7);
+        assertThat(numberOfGuidelines).hasValue(3);
+
+
+        gridView.majorGuidelineUnitProperty().set(0);
+        assertThat(numberOfGuidelines).hasValue(0);
+
+
+        gridView.majorGuidelineUnitProperty().set(4);
+        gridModel.setNumberOfColumns(4);
+        assertThat(numberOfGuidelines).hasValue(0);
     }
 }
 

@@ -39,6 +39,7 @@ public class App extends Application{
     public void start(Stage stage) throws Exception {
         stage.setTitle("Grid");
         BorderPane root = new BorderPane();
+        root.setMinSize(0,0);
 
 
         GridModel<States> gridModel = new GridModel<>();
@@ -50,6 +51,8 @@ public class App extends Application{
         // create the grid view and set the grid model
         GridView<States> gridView = new GridView<>();
         gridView.setGridModel(gridModel);
+
+        gridView.setMinSize(0,0);
 
         // define which color is shown when a cell has a specific state
         gridView.addColorMapping(States.A, Color.YELLOWGREEN);
@@ -66,6 +69,14 @@ public class App extends Application{
         gridView.cellBorderWidthProperty().set(1);
 
 
+
+        gridView.gridBorderColorProperty().set(Color.BLUE);
+        gridView.gridBorderWidthProperty().set(1);
+
+
+        gridView.majorGuidelineUnitProperty().set(3);
+        gridView.majorGuidelineColorProperty().set(Color.BLACK);
+        gridView.majorGuidelineStrokeWidth().set(4);
 
         root.setCenter(gridView);
 
@@ -92,7 +103,7 @@ public class App extends Application{
 
         root.setBottom(createControls());
 
-        stage.setScene(new Scene(root, 800,600));
+        stage.setScene(new Scene(root, 500,700));
         stage.show();
     }
 
