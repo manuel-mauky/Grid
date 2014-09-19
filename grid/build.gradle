@@ -20,7 +20,7 @@ dependencies {
 
     // testing
     testCompile "org.assertj:assertj-core:1.6.0"
-    testCompile "eu.lestard:assertj-javafx:0.1.2-SNAPSHOT"
+    testCompile "eu.lestard:assertj-javafx:0.2.0"
     testCompile "junit:junit:4.11"
 
     testCompile "de.saxsys:jfx-testrunner:1.1"
