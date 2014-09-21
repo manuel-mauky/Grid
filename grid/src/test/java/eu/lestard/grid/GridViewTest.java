@@ -135,41 +135,41 @@ public class GridViewTest {
 
 
     @Test
-    public void testMajorGuidelines(){
+    public void testGuidelines(){
 
-        assertThat(gridView.majorHorizontalGuidelines).isEmpty();
-        assertThat(gridView.majorVerticalGuidelines).isEmpty();
+        assertThat(gridView.horizontalGuidelines).isEmpty();
+        assertThat(gridView.verticalGuidelines).isEmpty();
 
         gridModel.setNumberOfColumns(5);
         gridModel.setNumberOfRows(5);
 
-//        assertThat(gridView.majorHorizontalGuidelines).isEmpty();
-        assertThat(gridView.majorVerticalGuidelines).isEmpty();
+        assertThat(gridView.horizontalGuidelines).isEmpty();
+        assertThat(gridView.verticalGuidelines).isEmpty();
 
-        gridView.majorGuidelineUnitProperty().set(3);
+        gridView.guidelineUnitProperty().set(3);
 
-        assertThat(gridView.majorHorizontalGuidelines).contains(3);
-        assertThat(gridView.majorVerticalGuidelines).contains(3);
+        assertThat(gridView.horizontalGuidelines).contains(3);
+        assertThat(gridView.verticalGuidelines).contains(3);
 
         gridModel.setNumberOfColumns(10);
 
-        assertThat(gridView.majorHorizontalGuidelines).containsOnly(3);
-        assertThat(gridView.majorVerticalGuidelines).containsOnly(3, 6, 9);
+        assertThat(gridView.horizontalGuidelines).containsOnly(3);
+        assertThat(gridView.verticalGuidelines).containsOnly(3, 6, 9);
 
         gridModel.setNumberOfRows(12);
 
         // no 12! it won't lay a guideline directly on the border of the grid
-        assertThat(gridView.majorHorizontalGuidelines).containsOnly(3, 6, 9);
-        assertThat(gridView.majorVerticalGuidelines).containsOnly(3, 6, 9);
+        assertThat(gridView.horizontalGuidelines).containsOnly(3, 6, 9);
+        assertThat(gridView.verticalGuidelines).containsOnly(3, 6, 9);
 
         gridModel.setNumberOfRows(13);
-        assertThat(gridView.majorHorizontalGuidelines).containsOnly(3, 6, 9, 12);
-        assertThat(gridView.majorVerticalGuidelines).containsOnly(3, 6, 9);
+        assertThat(gridView.horizontalGuidelines).containsOnly(3, 6, 9, 12);
+        assertThat(gridView.verticalGuidelines).containsOnly(3, 6, 9);
 
-        gridView.majorGuidelineUnitProperty().set(4);
+        gridView.guidelineUnitProperty().set(4);
 
-        assertThat(gridView.majorHorizontalGuidelines).containsOnly(4, 8, 12);
-        assertThat(gridView.majorVerticalGuidelines).containsOnly(4, 8);
+        assertThat(gridView.horizontalGuidelines).containsOnly(4, 8, 12);
+        assertThat(gridView.verticalGuidelines).containsOnly(4, 8);
     }
 
     @Test
@@ -184,13 +184,13 @@ public class GridViewTest {
         assertThat(numberOfGuidelines).hasValue(0);
 
 
-        gridView.majorGuidelineUnitProperty().set(3);
+        gridView.guidelineUnitProperty().set(3);
         assertThat(numberOfGuidelines).hasValue(1);
 
-        gridView.majorGuidelineUnitProperty().set(4);
+        gridView.guidelineUnitProperty().set(4);
         assertThat(numberOfGuidelines).hasValue(1);
 
-        gridView.majorGuidelineUnitProperty().set(2);
+        gridView.guidelineUnitProperty().set(2);
         assertThat(numberOfGuidelines).hasValue(2);
 
         gridModel.setNumberOfColumns(6);
@@ -200,11 +200,11 @@ public class GridViewTest {
         assertThat(numberOfGuidelines).hasValue(3);
 
 
-        gridView.majorGuidelineUnitProperty().set(0);
+        gridView.guidelineUnitProperty().set(0);
         assertThat(numberOfGuidelines).hasValue(0);
 
 
-        gridView.majorGuidelineUnitProperty().set(4);
+        gridView.guidelineUnitProperty().set(4);
         gridModel.setNumberOfColumns(4);
         assertThat(numberOfGuidelines).hasValue(0);
     }

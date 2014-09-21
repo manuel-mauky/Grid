@@ -74,9 +74,9 @@ public class App extends Application{
         gridView.gridBorderWidthProperty().set(1);
 
 
-        gridView.majorGuidelineUnitProperty().set(3);
-        gridView.majorGuidelineColorProperty().set(Color.BLACK);
-        gridView.majorGuidelineStrokeWidth().set(4);
+        gridView.guidelineUnitProperty().set(3);
+        gridView.guidelineColorProperty().set(Color.BLACK);
+        gridView.guidelineStrokeWidth().set(4);
 
         root.setCenter(gridView);
 

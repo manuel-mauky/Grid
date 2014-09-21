@@ -61,18 +61,11 @@ public class GridView<State> extends StackPane {
     private ObjectProperty<Paint> gridBorderColor = new SimpleObjectProperty<>(Color.TRANSPARENT);
 
 
-    private IntegerProperty majorGuidelineUnit = new SimpleIntegerProperty(0);
-    ObservableList<Integer> majorHorizontalGuidelines = FXCollections.observableArrayList();
-    ObservableList<Integer> majorVerticalGuidelines = FXCollections.observableArrayList();
-    private ObjectProperty<Color> majorGuidelineColor= new SimpleObjectProperty<>(Color.TRANSPARENT);
-    private DoubleProperty majorGuidelineStrokeWidth = new SimpleDoubleProperty(5);
-
-
-    // Todo implement minor guidelines
-    private IntegerProperty minorGuidelineUnit = new SimpleIntegerProperty(0);
-    ObservableList<Integer> minorHorizontalGuidelines = FXCollections.observableArrayList();
-    ObservableList<Integer> minorVerticalGuidelines = FXCollections.observableArrayList();
-    private ObjectProperty<Color> minorGuidelineColor= new SimpleObjectProperty<>(Color.TRANSPARENT);
+    private IntegerProperty guidelineUnit = new SimpleIntegerProperty(0);
+    ObservableList<Integer> horizontalGuidelines = FXCollections.observableArrayList();
+    ObservableList<Integer> verticalGuidelines = FXCollections.observableArrayList();
+    private ObjectProperty<Color> guidelineColor = new SimpleObjectProperty<>(Color.TRANSPARENT);
+    private DoubleProperty guidelineStrokeWidth = new SimpleDoubleProperty(5);
 
 
     private Rectangle gridBackground = new Rectangle();
@@ -143,39 +136,39 @@ public class GridView<State> extends StackPane {
             guidelinePane.getChildren().clear();
 
 
-            majorVerticalGuidelines.forEach(row -> {
+            verticalGuidelines.forEach(row -> {
                 Line major = new Line();
 
-                major.startYProperty().bind(majorGuidelineStrokeWidth.divide(2));
+                major.startYProperty().bind(guidelineStrokeWidth.divide(2));
                 major.startXProperty().bind(cellSquareSize.multiply(row));
 
-                major.endYProperty().bind(gridBackground.heightProperty().subtract(majorGuidelineStrokeWidth));
+                major.endYProperty().bind(gridBackground.heightProperty().subtract(guidelineStrokeWidth));
                 major.endXProperty().bind(cellSquareSize.multiply(row));
 
-                major.strokeProperty().bind(majorGuidelineColor);
-                major.strokeWidthProperty().bind(majorGuidelineStrokeWidth);
+                major.strokeProperty().bind(guidelineColor);
+                major.strokeWidthProperty().bind(guidelineStrokeWidth);
 
                 guidelinePane.getChildren().add(major);
             });
 
-            majorHorizontalGuidelines.forEach(column -> {
+            horizontalGuidelines.forEach(column -> {
                 Line major = new Line();
 
                 major.startYProperty().bind(cellSquareSize.multiply(column));
-                major.startXProperty().bind(majorGuidelineStrokeWidth.divide(2));
+                major.startXProperty().bind(guidelineStrokeWidth.divide(2));
 
                 major.endYProperty().bind(cellSquareSize.multiply(column));
-                major.endXProperty().bind(gridBackground.widthProperty().subtract(majorGuidelineStrokeWidth));
+                major.endXProperty().bind(gridBackground.widthProperty().subtract(guidelineStrokeWidth));
 
-                major.strokeProperty().bind(majorGuidelineColor);
-                major.strokeWidthProperty().bind(majorGuidelineStrokeWidth);
+                major.strokeProperty().bind(guidelineColor);
+                major.strokeWidthProperty().bind(guidelineStrokeWidth);
 
                 guidelinePane.getChildren().add(major);
             });
         };
 
-        majorHorizontalGuidelines.addListener(guidelineRepaintListener);
-        majorVerticalGuidelines.addListener(guidelineRepaintListener);
+        horizontalGuidelines.addListener(guidelineRepaintListener);
+        verticalGuidelines.addListener(guidelineRepaintListener);
 
         gridModel.get().getCells().forEach(cell -> {
             addedCell(pxPerCell, cell);
@@ -207,25 +200,25 @@ public class GridView<State> extends StackPane {
         numberOfHorizontalMajorGuidelines = createNumberOfGuidelinesBinding(getGridModel().numberOfRows());
 
         numberOfHorizontalMajorGuidelines.addListener((obs, oldValue, newValue) -> {
-            majorHorizontalGuidelines.clear();
+            horizontalGuidelines.clear();
 
             int number = newValue.intValue();
-            int offset = majorGuidelineUnit.get();
+            int offset = guidelineUnit.get();
 
             for (int i = 1; i <= number; i++) {
-                majorHorizontalGuidelines.add(i * offset);
+                horizontalGuidelines.add(i * offset);
             }
         });
         numberOfVerticalMajorGuidelines = createNumberOfGuidelinesBinding(getGridModel().numberOfColumns());
 
         numberOfVerticalMajorGuidelines.addListener((obs, oldValue, newValue) -> {
-            majorVerticalGuidelines.clear();
+            verticalGuidelines.clear();
 
             int number = newValue.intValue();
-            int offset = majorGuidelineUnit.get();
+            int offset = guidelineUnit.get();
 
             for (int i = 1; i <= number; i++) {
-                majorVerticalGuidelines.add(i * offset);
+                verticalGuidelines.add(i * offset);
             }
         });
 
@@ -233,7 +226,7 @@ public class GridView<State> extends StackPane {
 
 
     NumberBinding createNumberOfGuidelinesBinding(IntegerExpression base){
-        return NumberBindings.divideSafe(base.subtract(1), majorGuidelineUnit);
+        return NumberBindings.divideSafe(base.subtract(1), guidelineUnit);
     }
 
 
@@ -487,24 +480,15 @@ public class GridView<State> extends StackPane {
     }
 
 
-    public IntegerProperty majorGuidelineUnitProperty(){
-        return majorGuidelineUnit;
+    public IntegerProperty guidelineUnitProperty(){
+        return guidelineUnit;
     }
 
-    public ObjectProperty<Color> majorGuidelineColorProperty(){
-        return majorGuidelineColor;
+    public ObjectProperty<Color> guidelineColorProperty(){
+        return guidelineColor;
     }
 
-
-    public IntegerProperty minorGuidelineUnitProperty(){
-        return minorGuidelineUnit;
-    }
-
-    public ObjectProperty<Color> minorGuidelineColorProperty(){
-        return minorGuidelineColor;
-    }
-
-    public DoubleProperty majorGuidelineStrokeWidth(){
-        return majorGuidelineStrokeWidth;
+    public DoubleProperty guidelineStrokeWidth(){
+        return guidelineStrokeWidth;
     }
 }
