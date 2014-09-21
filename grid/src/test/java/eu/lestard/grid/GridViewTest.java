@@ -1,7 +1,6 @@
 package eu.lestard.grid;
 
 import de.saxsys.javafx.test.JfxRunner;
-import javafx.beans.binding.NumberBinding;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.scene.Node;
@@ -17,8 +16,7 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.CompletableFuture;
 
-import static eu.lestard.assertj.javafx.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(JfxRunner.class)
 public class GridViewTest {
@@ -135,78 +133,68 @@ public class GridViewTest {
 
 
     @Test
-    public void testGuidelines(){
+    public void testHorizontalGuidelines(){
 
         assertThat(gridView.horizontalGuidelines).isEmpty();
-        assertThat(gridView.verticalGuidelines).isEmpty();
 
         gridModel.setNumberOfColumns(5);
         gridModel.setNumberOfRows(5);
 
         assertThat(gridView.horizontalGuidelines).isEmpty();
-        assertThat(gridView.verticalGuidelines).isEmpty();
 
-        gridView.guidelineUnitProperty().set(3);
+
+        gridView.horizontalGuidelineUnitProperty().setValue(3);
 
         assertThat(gridView.horizontalGuidelines).contains(3);
-        assertThat(gridView.verticalGuidelines).contains(3);
 
-        gridModel.setNumberOfColumns(10);
 
-        assertThat(gridView.horizontalGuidelines).containsOnly(3);
-        assertThat(gridView.verticalGuidelines).containsOnly(3, 6, 9);
+        gridModel.setNumberOfRows(10);
+        assertThat(gridView.horizontalGuidelines).containsOnly(3, 6, 9);
+
 
         gridModel.setNumberOfRows(12);
-
         // no 12! it won't lay a guideline directly on the border of the grid
         assertThat(gridView.horizontalGuidelines).containsOnly(3, 6, 9);
-        assertThat(gridView.verticalGuidelines).containsOnly(3, 6, 9);
+
+
+        gridView.horizontalGuidelineUnitProperty().setValue(4);
+        assertThat(gridView.horizontalGuidelines).containsOnly(4, 8);
+
 
         gridModel.setNumberOfRows(13);
-        assertThat(gridView.horizontalGuidelines).containsOnly(3, 6, 9, 12);
-        assertThat(gridView.verticalGuidelines).containsOnly(3, 6, 9);
-
-        gridView.guidelineUnitProperty().set(4);
-
         assertThat(gridView.horizontalGuidelines).containsOnly(4, 8, 12);
-        assertThat(gridView.verticalGuidelines).containsOnly(4, 8);
     }
 
     @Test
-    public void testNumberOfGuidelines(){
-        final NumberBinding numberOfGuidelines = gridView.createNumberOfGuidelinesBinding(gridModel.numberOfColumns());
+    public void testVerticalGuidelines(){
+        assertThat(gridView.verticalGuidelines).isEmpty();
 
-        assertThat(numberOfGuidelines).hasValue(0);
-
-        gridModel.setNumberOfRows(5);
         gridModel.setNumberOfColumns(5);
+        gridModel.setNumberOfRows(5);
 
-        assertThat(numberOfGuidelines).hasValue(0);
-
-
-        gridView.guidelineUnitProperty().set(3);
-        assertThat(numberOfGuidelines).hasValue(1);
-
-        gridView.guidelineUnitProperty().set(4);
-        assertThat(numberOfGuidelines).hasValue(1);
-
-        gridView.guidelineUnitProperty().set(2);
-        assertThat(numberOfGuidelines).hasValue(2);
-
-        gridModel.setNumberOfColumns(6);
-        assertThat(numberOfGuidelines).hasValue(2);
-
-        gridModel.setNumberOfColumns(7);
-        assertThat(numberOfGuidelines).hasValue(3);
+        assertThat(gridView.verticalGuidelines).isEmpty();
 
 
-        gridView.guidelineUnitProperty().set(0);
-        assertThat(numberOfGuidelines).hasValue(0);
+        gridView.verticalGuidelineUnitProperty().setValue(3);
+
+        assertThat(gridView.verticalGuidelines).contains(3);
 
 
-        gridView.guidelineUnitProperty().set(4);
-        gridModel.setNumberOfColumns(4);
-        assertThat(numberOfGuidelines).hasValue(0);
+        gridModel.setNumberOfColumns(10);
+        assertThat(gridView.verticalGuidelines).containsOnly(3, 6, 9);
+
+
+        gridModel.setNumberOfColumns(12);
+        // no 12! it won't lay a guideline directly on the border of the grid
+        assertThat(gridView.verticalGuidelines).containsOnly(3, 6, 9);
+
+
+        gridView.verticalGuidelineUnitProperty().setValue(4);
+        assertThat(gridView.verticalGuidelines).containsOnly(4, 8);
+
+
+        gridModel.setNumberOfColumns(13);
+        assertThat(gridView.verticalGuidelines).containsOnly(4, 8, 12);
     }
 }
 

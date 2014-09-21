@@ -74,7 +74,8 @@ public class App extends Application{
         gridView.gridBorderWidthProperty().set(1);
 
 
-        gridView.guidelineUnitProperty().set(3);
+        gridView.horizontalGuidelineUnitProperty().set(3);
+        gridView.verticalGuidelineUnitProperty().set(5);
         gridView.guidelineColorProperty().set(Color.BLACK);
         gridView.guidelineStrokeWidth().set(4);
 

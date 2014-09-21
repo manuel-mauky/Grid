@@ -4,7 +4,6 @@ import eu.lestard.advanced_bindings.api.NumberBindings;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.IntegerExpression;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -61,8 +60,10 @@ public class GridView<State> extends StackPane {
     private ObjectProperty<Paint> gridBorderColor = new SimpleObjectProperty<>(Color.TRANSPARENT);
 
 
-    private IntegerProperty guidelineUnit = new SimpleIntegerProperty(0);
+    private IntegerProperty horizontalGuidelineUnit = new SimpleIntegerProperty(0);
     ObservableList<Integer> horizontalGuidelines = FXCollections.observableArrayList();
+
+    private IntegerProperty verticalGuidelineUnit = new SimpleIntegerProperty(0);
     ObservableList<Integer> verticalGuidelines = FXCollections.observableArrayList();
     private ObjectProperty<Color> guidelineColor = new SimpleObjectProperty<>(Color.TRANSPARENT);
     private DoubleProperty guidelineStrokeWidth = new SimpleDoubleProperty(5);
@@ -197,25 +198,25 @@ public class GridView<State> extends StackPane {
     }
 
     private void initMajorGuidelinesBindings(){
-        numberOfHorizontalMajorGuidelines = createNumberOfGuidelinesBinding(getGridModel().numberOfRows());
+        numberOfHorizontalMajorGuidelines = NumberBindings.divideSafe(getGridModel().numberOfRows().subtract(1), horizontalGuidelineUnit);
 
         numberOfHorizontalMajorGuidelines.addListener((obs, oldValue, newValue) -> {
             horizontalGuidelines.clear();
 
             int number = newValue.intValue();
-            int offset = guidelineUnit.get();
+            int offset = horizontalGuidelineUnit.get();
 
             for (int i = 1; i <= number; i++) {
                 horizontalGuidelines.add(i * offset);
             }
         });
-        numberOfVerticalMajorGuidelines = createNumberOfGuidelinesBinding(getGridModel().numberOfColumns());
+        numberOfVerticalMajorGuidelines = NumberBindings.divideSafe(getGridModel().numberOfColumns().subtract(1), verticalGuidelineUnit);
 
         numberOfVerticalMajorGuidelines.addListener((obs, oldValue, newValue) -> {
             verticalGuidelines.clear();
 
             int number = newValue.intValue();
-            int offset = guidelineUnit.get();
+            int offset = verticalGuidelineUnit.get();
 
             for (int i = 1; i <= number; i++) {
                 verticalGuidelines.add(i * offset);
@@ -223,13 +224,6 @@ public class GridView<State> extends StackPane {
         });
 
     }
-
-
-    NumberBinding createNumberOfGuidelinesBinding(IntegerExpression base){
-        return NumberBindings.divideSafe(base.subtract(1), guidelineUnit);
-    }
-
-
 
     /**
      * This method is called when new cells are added in the grid model.
@@ -480,8 +474,11 @@ public class GridView<State> extends StackPane {
     }
 
 
-    public IntegerProperty guidelineUnitProperty(){
-        return guidelineUnit;
+    public IntegerProperty horizontalGuidelineUnitProperty(){
+        return horizontalGuidelineUnit;
+    }
+    public IntegerProperty verticalGuidelineUnitProperty(){
+        return verticalGuidelineUnit;
     }
 
     public ObjectProperty<Color> guidelineColorProperty(){
