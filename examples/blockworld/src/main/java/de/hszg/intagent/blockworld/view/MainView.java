@@ -3,10 +3,10 @@ package de.hszg.intagent.blockworld.view;
 import de.hszg.intagent.blockworld.core.BlockStatus;
 import de.hszg.intagent.blockworld.core.Command;
 import de.hszg.intagent.blockworld.core.conditions.Condition;
-import de.saxsys.jfx.mvvm.api.FxmlView;
-import de.saxsys.jfx.mvvm.api.InjectViewModel;
-import de.saxsys.jfx.mvvm.viewloader.ViewLoader;
-import de.saxsys.jfx.mvvm.viewloader.ViewTuple;
+import de.saxsys.mvvmfx.FluentViewLoader;
+import de.saxsys.mvvmfx.FxmlView;
+import de.saxsys.mvvmfx.InjectViewModel;
+import de.saxsys.mvvmfx.ViewTuple;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -49,9 +49,9 @@ public class MainView implements FxmlView<MainViewModel>, Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        ViewLoader viewLoader = new ViewLoader();
+        FluentViewLoader.fxmlView(WorldView.class).load();
 
-        final ViewTuple<WorldView, WorldViewModel> startViewTuple = viewLoader.loadViewTuple(WorldView.class);
+        final ViewTuple<WorldView, WorldViewModel> startViewTuple =  FluentViewLoader.fxmlView(WorldView.class).load();
 
         startViewTuple.getCodeBehind().getViewModel().setWorld(viewModel.getStartWorld());
 
@@ -60,7 +60,7 @@ public class MainView implements FxmlView<MainViewModel>, Initializable {
         centerGridPane.add(startViewTuple.getView(), 0, 0);
 
 
-        final ViewTuple<WorldView, WorldViewModel> endViewTuple = viewLoader.loadViewTuple(WorldView.class);
+        final ViewTuple<WorldView, WorldViewModel> endViewTuple = FluentViewLoader.fxmlView(WorldView.class).load();
 
 
         endViewTuple.getCodeBehind().getViewModel().setWorld(viewModel.getEndWorld());
@@ -70,7 +70,7 @@ public class MainView implements FxmlView<MainViewModel>, Initializable {
         centerGridPane.add(endViewTuple.getView(), 1, 0);
 
 
-        final ViewTuple<WorldView, WorldViewModel> currentViewTuple = viewLoader.loadViewTuple(WorldView.class);
+        final ViewTuple<WorldView, WorldViewModel> currentViewTuple = FluentViewLoader.fxmlView(WorldView.class).load();
 
         currentViewTuple.getCodeBehind().getViewModel().setWorld(viewModel.getCurrentWorld());
 

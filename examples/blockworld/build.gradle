@@ -16,7 +16,7 @@ jar.manifest.attributes("Main-Class" : mainClassName)
 
 
 dependencies {
-    compile 'de.saxsys:mvvmFX:0.2.0'
+    compile 'de.saxsys:mvvmFX:0.4.0'
 
     compile "org.controlsfx:controlsfx:8.0.5"
 

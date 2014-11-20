@@ -1,7 +1,7 @@
 package de.hszg.intagent.blockworld.view;
 
 import de.hszg.intagent.blockworld.core.World;
-import de.saxsys.jfx.mvvm.api.ViewModel;
+import de.saxsys.mvvmfx.ViewModel;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;

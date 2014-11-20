@@ -5,7 +5,7 @@ import de.hszg.intagent.blockworld.core.Command;
 import de.hszg.intagent.blockworld.core.Solver;
 import de.hszg.intagent.blockworld.core.World;
 import de.hszg.intagent.blockworld.core.conditions.Condition;
-import de.saxsys.jfx.mvvm.api.ViewModel;
+import de.saxsys.mvvmfx.ViewModel;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 

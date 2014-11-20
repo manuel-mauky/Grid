@@ -2,8 +2,8 @@ package de.hszg.intagent.blockworld.view;
 
 import de.hszg.intagent.blockworld.core.BlockStatus;
 import de.hszg.intagent.blockworld.core.World;
-import de.saxsys.jfx.mvvm.api.FxmlView;
-import de.saxsys.jfx.mvvm.api.InjectViewModel;
+import de.saxsys.mvvmfx.FxmlView;
+import de.saxsys.mvvmfx.InjectViewModel;
 import eu.lestard.grid.GridView;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
