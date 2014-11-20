@@ -1,0 +1,29 @@
+apply plugin: 'java'
+apply plugin: "application"
+
+apply plugin: 'com.github.johnrengelman.shadow'
+
+buildscript {
+    repositories { jcenter() }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:0.9.0-M3'
+    }
+}
+
+mainClassName = "de.hszg.intagent.blockworld.App"
+
+jar.manifest.attributes("Main-Class" : mainClassName)
+
+
+dependencies {
+    compile 'de.saxsys:mvvmFX:0.2.0'
+
+    compile "org.controlsfx:controlsfx:8.0.5"
+
+    compile 'ch.qos.logback:logback-classic:1.1.2'
+
+    // testing
+    testCompile "junit:junit:4.11"
+    testCompile "org.assertj:assertj-core:1.6.0"
+    testCompile "eu.lestard:assertj-javafx:0.1.0"
+}

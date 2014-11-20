@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.hszg.intagent.blockworld.view.WorldView">
+<children><Label fx:id="title" maxWidth="1.7976931348623157E308" text="Label" HBox.hgrow="ALWAYS" /><AnchorPane fx:id="worldPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+</children>
+<padding>
+<Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+</padding></VBox>

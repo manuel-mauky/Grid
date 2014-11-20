@@ -1,5 +1,5 @@
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.2-rc-2'
+    gradleVersion = '2.2'
 }
 
 
@@ -26,6 +26,12 @@ project(":examples:demo") {
 }
 
 project(":examples:tic-tac-toe") {
+    dependencies {
+        compile project(":grid")
+    }
+}
+
+project(":examples:blockworld") {
     dependencies {
         compile project(":grid")
     }

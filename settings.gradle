@@ -1,1 +1,2 @@
-include "grid", "examples:demo", "examples:tic-tac-toe"
+include "grid", "examples:demo", "examples:tic-tac-toe", "examples:blockworld"
+

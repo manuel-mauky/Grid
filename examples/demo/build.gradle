@@ -2,8 +2,6 @@ apply plugin: "java"
 
 dependencies {
 
-    compile 'eu.lestard:grid:0.1.0'
-
     compile "org.assertj:assertj-core:1.6.0"
 
     // testing
