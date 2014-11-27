@@ -124,11 +124,11 @@ public class GridModelTest {
     }
 
     /**
-     * When there is no default state define and the size of the grid is changed,
+     * When there is no default state defined and the size of the grid is changed,
      * the new cells have a state of <code>null</code>.
      *
      * When now a new default state is defined than all cells with a state of <code>null</code>
-     * should get the new default state. Cells that already have another state should keep this state.
+     * should get the new default state. Cells that already have another state should keep their state.
      */
     @Test
     public void testCellsWithStateNullGetDefaultState(){
