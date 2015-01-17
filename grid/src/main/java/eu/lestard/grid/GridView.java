@@ -79,6 +79,10 @@ public class GridView<State> extends StackPane {
      * Create a new instance of the GridView.
      */
     public GridView() {
+
+        this.setMinWidth(0);
+        this.setMinHeight(0);
+
         this.getChildren().add(gridBackground);
         this.getChildren().add(rootPane);
 
