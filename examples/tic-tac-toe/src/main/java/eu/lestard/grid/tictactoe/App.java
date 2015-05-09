@@ -10,7 +10,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.net.URL;
+
 public class App extends Application {
+
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 
 
     @Override
@@ -26,8 +33,8 @@ public class App extends Application {
         GridView<States> gridView = new GridView<>();
         gridView.setGridModel(gridModel);
 
-        gridView.addNodeMapping(States.O, (cell)-> new Label("O"));
-        gridView.addNodeMapping(States.X, (cell)-> new Label("X"));
+        gridView.setNodeFactory(cell ->
+                States.EMPTY == cell.getState() ? null : new Label(cell.getState().name()));
 
         GameLogic gameLogic = new GameLogic(gridModel);
         gameLogic.start();
@@ -58,7 +65,14 @@ public class App extends Application {
 
         final Scene scene = new Scene(root, 500, 500);
 
-        scene.getStylesheets().add("style.css");
+
+        final URL resource = this.getClass().getResource("/style.css");
+        if(resource != null) {
+            final String stylesheet = resource.toExternalForm();
+            System.out.println(stylesheet);
+            scene.getStylesheets().add(stylesheet);
+        }
+
 
         primaryStage.setScene(scene);
         primaryStage.show();

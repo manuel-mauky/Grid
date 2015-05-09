@@ -1,4 +1,14 @@
 apply plugin: "java"
+apply plugin: "application"
+
+
+mainClassName = 'eu.lestard.grid.tictactoe.App'
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
 
 dependencies {
 

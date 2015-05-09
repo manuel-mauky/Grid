@@ -74,6 +74,7 @@ public class GridView<State> extends StackPane {
     // don't inline these bindings to prevent errors with Garbage Collection
     private NumberBinding numberOfHorizontalMajorGuidelines;
     private NumberBinding numberOfVerticalMajorGuidelines;
+    private Function<Cell<State>, Node> nodeFactory;
 
     /**
      * Create a new instance of the GridView.
@@ -318,7 +319,15 @@ public class GridView<State> extends StackPane {
             Insets.EMPTY)));
         pane.getChildren().clear();
         final Function<Cell<State>, Node> nodeSupplier = nodeMapping.get(cell.getState());
-        if (nodeSupplier != null) {
+
+        if(nodeSupplier == null) {
+            if(nodeFactory != null) {
+                final Node newNode = nodeFactory.apply(cell);
+                if(newNode != null) {
+                    pane.getChildren().add(newNode);
+                }
+            }
+        }else {
             pane.getChildren().add(nodeSupplier.apply(cell));
         }
     }
@@ -382,6 +391,26 @@ public class GridView<State> extends StackPane {
         this.nodeMapping.put(state, mappingFunction);
         updateAllCells();
     }
+
+
+    /**
+     * This is an alternative to {@link #addNodeMapping(Object, Function)}  to define mappings
+     * for cells.
+     * Note that this factory has a lower priority then the mappings defined by {@link #addNodeMapping(Object, Function)},
+     * meaning that the node factory will only be used if there is no mapping defined for a specific state.
+     *
+     *
+     * It is safe to return <code>null</code> for a cell.
+     * In this case nothing will be added to the node. This is the same behaviour as if there is any mapping for the given state.
+     *
+     *
+     * @param nodeFactory a function that returns a node instance for a given cell.
+     */
+    public void setNodeFactory(Function<Cell<State>, Node> nodeFactory) {
+        this.nodeFactory = nodeFactory;
+        updateAllCells();
+    }
+
 
     /**
      * The size of a single cell in the grid.

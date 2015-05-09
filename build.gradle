@@ -1,5 +1,5 @@
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.2'
+    gradleVersion = '2.4'
 }
 
 
@@ -9,7 +9,7 @@ task wrapper(type: Wrapper) {
 subprojects {
     apply plugin: "java"
     group = "eu.lestard"
-    version = "0.2.0"
+    version = "0.3.0"
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
