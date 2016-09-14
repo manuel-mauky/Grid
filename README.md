@@ -8,6 +8,7 @@ Examples are:
 
 - [ColorPuzzleFX](https://github.com/lestard/ColorPuzzleFX)
 - [SnakeFX](https://github.com/lestard/SnakeFX)
+- [Nonogram](https://github.com/lestard/nonogram)
 
 ### Goals
 
